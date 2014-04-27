@@ -1,5 +1,7 @@
 package core;
 
+//tester commit fork
+
 public class Segment {
 	
 	private int deltaLatitude;
