@@ -2,7 +2,6 @@ package core;
 
 import java.util.ArrayList;
 
-
 public class Noeud {
 	private float longitude;
 	private float latitude;

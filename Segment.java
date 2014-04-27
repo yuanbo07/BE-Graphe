@@ -5,9 +5,6 @@ public class Segment {
 	private int deltaLatitude;
 	private int deltaLongitude;
 	
-	
-	
-	
 	// getter & setter
 	
 	public int getDeltaLatitude() {

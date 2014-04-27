@@ -2,6 +2,8 @@ package core;
 
 import java.util.ArrayList;
 
+import base.Descripteur;
+
 public class Successeur {
 	
 	private int nb_segment;
@@ -9,9 +11,8 @@ public class Successeur {
 	private Noeud noeudSuivant;
 	private Noeud noeudDestination;
 	private int longueurRoute;
-	
-	
-	
+	private Descripteur descripteur;
+	private int num_zone;
 	
 	// getter & setter
 	
@@ -44,6 +45,19 @@ public class Successeur {
 	}
 	public void setLongueurRoute(int longueurRoute) {
 		this.longueurRoute = longueurRoute;
+	}
+	
+	public int getNum_zone() {
+		return num_zone;
+	}
+	public void setNum_zone(int num_zone) {
+		this.num_zone = num_zone;
+	}
+	public Descripteur getDescripteur() {
+		return descripteur;
+	}
+	public void setDescripteur(Descripteur descripteur) {
+		this.descripteur = descripteur;
 	}
 	
 	
