@@ -107,6 +107,7 @@ public class Graphe {
 		for (int num_descr = 0 ; num_descr < nb_descripteurs ; num_descr++) {
 			// Lecture du descripteur numero num_descr
 			listeDescripteurs.add(new Descripteur(dis));
+		}
 	
 			/*// On affiche quelques descripteurs parmi tous.
 			if (0 == num_descr % (1 + nb_descripteurs / 400))
@@ -136,11 +137,23 @@ public class Graphe {
 			    // Nombre de segments constituant l'arete
 			    int nb_segm   = dis.readUnsignedShort() ;
 			    
-			    // Ajouter successeur à num_node
-			    listeNoeuds.get(num_node)
+			    // Ajouter successeur à ce num_node
 			    
+			    Noeud noueudCourant = listeNoeuds.get(num_node);
+			    Noeud noeudDestination = listeNoeuds.get(dest_node);
+			    Descripteur descripteur = listeDescripteurs.get(descr_num);
 			    
-
+			    // On ajoute le successeur de num_noeud (noeud courant)
+			    // Si c'est sens double, on ajoute de plus un successeur pour le noeud de destination
+			    
+			    Successeur succ = new Successeur(nb_segm, noeudDestination, longueur, descripteur, succ_zone);
+			    listeNoeuds.get(num_node).addSuccesseur(succ);
+			    
+			    if (!listeDescripteurs.get(descr_num).isSensUnique()){
+			    	Successeur succDoubleSens = new Successeur(nb_segm, noueudCourant, longueur, descripteur, succ_zone);
+			    	listeNoeuds.get(dest_node).addSuccesseur(succDoubleSens);
+			    }
+			    
 		    edges++ ;
 		    
 		    Couleur.set(dessin, listeDescripteurs.get(descr_num).getType()) ;
@@ -150,21 +163,22 @@ public class Graphe {
 
 		    // Chaque segment est dessine'
 		    for (int i = 0 ; i < nb_segm ; i++) {
-			float delta_lon = (dis.readShort()) / 2.0E5f ;
-			float delta_lat = (dis.readShort()) / 2.0E5f ;
-			dessin.drawLine(current_long, current_lat, (current_long + delta_lon), (current_lat + delta_lat)) ;
-			current_long += delta_lon ;
-			current_lat  += delta_lat ;
+				float delta_lon = (dis.readShort()) / 2.0E5f ;
+				float delta_lat = (dis.readShort()) / 2.0E5f ;
+				dessin.drawLine(current_long, current_lat, (current_long + delta_lon), (current_lat + delta_lat)) ;
+				current_long += delta_lon ;
+				current_lat  += delta_lat ;
 		    }
 		    
 		    // Le dernier trait rejoint le sommet destination.
 		    // On le dessine si le noeud destination est dans la zone du graphe courant.
-		    if (succ_zone == numzone) {
-			dessin.drawLine(current_long, current_lat, longitudes[dest_node], latitudes[dest_node]) ;
+			if (succ_zone == numzone) {
+				dessin.drawLine(current_long, current_lat, listeNoeuds.get(dest_node).getLongitude(), listeNoeuds.get(dest_node).getLatitude()) ;
 		    }
-		}
-	    }
+			}
+	}
 	    
+	    // fin de successeur, on lit un octet à 253
 	    Utils.checkByte(253, dis) ;
 
 	    System.out.println("Fichier lu : " + nb_nodes + " sommets, " + edges + " aretes, " 
@@ -215,9 +229,9 @@ public class Graphe {
 	    float minDist = Float.MAX_VALUE ;
 	    int   noeud   = 0 ;
 	    
-	    for (int num_node = 0 ; num_node < longitudes.length ; num_node++) {
-		float londiff = (longitudes[num_node] - lon) ;
-		float latdiff = (latitudes[num_node] - lat) ;
+	    for (int num_node = 0 ; num_node < listeNoeuds.size() ; num_node++) {
+		float londiff = (listeNoeuds.get(num_node).getLongitude() - lon) ;
+		float latdiff = (listeNoeuds.get(num_node).getLatitude() - lat) ;
 		float dist = londiff*londiff + latdiff*latdiff ;
 		if (dist < minDist) {
 		    noeud = num_node ;
@@ -228,7 +242,7 @@ public class Graphe {
 	    System.out.println("Noeud le plus proche : " + noeud) ;
 	    System.out.println() ;
 	    dessin.setColor(java.awt.Color.red) ;
-	    dessin.drawPoint(longitudes[noeud], latitudes[noeud], 5) ;
+	    dessin.drawPoint(listeNoeuds.get(noeud).getLongitude(), listeNoeuds.get(noeud).getLatitude(), 5) ;
 	}
     }
 
@@ -236,6 +250,7 @@ public class Graphe {
      *  Charge un chemin depuis un fichier .path (voir le fichier FORMAT_PATH qui decrit le format)
      *  Verifie que le chemin est empruntable et calcule le temps de trajet.
      */
+    
     public void verifierChemin(DataInputStream dis, String nom_chemin) {
 	
 	try {
@@ -268,15 +283,17 @@ public class Graphe {
 	    int current_zone = 0 ;
 	    int current_node = 0 ;
 	    
-	    // yuanbo : création d'un chemin
-	    chemin = new Chemin(path_carte, nb_noeuds, first_node, last_node, first_zone, last_zone);
+	    // Création d'un chemin
+	    Noeud noeudDepart = listeNoeuds.get(first_node);
+	    Noeud noeudDestination = listeNoeuds.get(last_node);
+	    chemin = new Chemin(path_carte, nb_noeuds, noeudDepart, noeudDestination, first_zone, last_zone);
 
 	    // Tous les noeuds du chemin
 	    for (int i = 0 ; i < nb_noeuds ; i++) {
 			current_zone = dis.readUnsignedByte() ;
 			current_node = Utils.read24bits(dis) ;
 			
-		//ajouter les noeuds dans le chemin
+		// Ajouter les noeuds dans le chemin
 			chemin.addNoeud(listeNoeuds.get(current_node));
 
 		System.out.println(" --> " + current_zone + ":" + current_node) ;
@@ -291,7 +308,6 @@ public class Graphe {
 	    e.printStackTrace() ;
 	    System.exit(1) ;
 	}
-
     }
 
 }

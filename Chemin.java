@@ -25,20 +25,18 @@ public class Chemin {
 	}
 	
 	//calculer le cout en distance d'un chemin
-	
+	// pas fini
 	public void calculCoutDistanceChemin(Noeud noeudDepart, Noeud noeudDestination){
 		int coutDistance = 0;
 		int coutDistanceArrete = 0;
 		for (Successeur succ : noeudDepart.getListeSuccesseur())
-			if (noeudDepart.getId_noeud() == this.noeudDepart.getId_noeud())
-				
+			if (noeudDepart.getId_noeud() == this.noeudDepart.getId_noeud());
 	}
 	
 	
 	//calculer le cout en temps d'un chemin
 	
 	public void calculCoutTempsChemin(Noeud noeudDepart, Noeud noeudDestination){
-
 	}
 	
 	
