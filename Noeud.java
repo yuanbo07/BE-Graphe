@@ -6,8 +6,15 @@ public class Noeud {
 	private float longitude;
 	private float latitude;
 	private int id_noeud;
+	private int nb_successeur;
 	private ArrayList<Successeur> listeSuccesseur = new ArrayList<Successeur>();
 	
+	public Noeud(int id_noeud, float latitude, float longitude, int nb_successeur){
+		this.id_noeud = id_noeud;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.nb_successeur = nb_successeur;
+	}
 	
 	// getter & setter
 	
@@ -41,6 +48,14 @@ public class Noeud {
 	
 	public void setListeSuccesseur(ArrayList<Successeur> listeSuccesseur) {
 		this.listeSuccesseur = listeSuccesseur;
+	}
+
+	public int getNb_successeur() {
+		return nb_successeur;
+	}
+
+	public void setNb_successeur(int nb_successeur) {
+		this.nb_successeur = nb_successeur;
 	}
 	
 }

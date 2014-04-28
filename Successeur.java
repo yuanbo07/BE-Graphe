@@ -10,10 +10,21 @@ public class Successeur {
 	private ArrayList<Segment> listeSegment = new ArrayList<Segment>();
 	private Noeud noeudSuivant;
 	private Noeud noeudDestination;
-	private int longueurRoute;
+	private int longueurArrete;
 	private Descripteur descripteur;
-	private int num_zone;
+	private int succ_zone;
 	
+	public Successeur(int succ_zone, Noeud noeudDestination, int num_desc, int longueurArrete, int nb_segment){
+		super();
+		this.nb_segment = nb_segment;
+		this.noeudSuivant = noeudSuivant;
+		this.noeudDestination = noeudDestination;
+		this.longueurArrete = longueurArrete;
+		this.descripteur = descripteur;
+		this.succ_zone = succ_zone;
+	}
+
+
 	// getter & setter
 	
 	public int getNb_segment() {
@@ -40,11 +51,11 @@ public class Successeur {
 	public void setNoeudDestination(Noeud noeudDestination) {
 		this.noeudDestination = noeudDestination;
 	}
-	public int getLongueurRoute() {
-		return longueurRoute;
+	public int getLongueurArrete() {
+		return longueurArrete;
 	}
-	public void setLongueurRoute(int longueurRoute) {
-		this.longueurRoute = longueurRoute;
+	public void setLongueurArrete(int longueurArrete) {
+		this.longueurArrete = longueurArrete;
 	}
 	
 	public int getNum_zone() {

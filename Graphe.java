@@ -6,6 +6,7 @@ package core ;
  */
 
 import java.io.* ;
+import java.util.ArrayList;
 import base.* ;
 
 public class Graphe {
@@ -29,15 +30,23 @@ public class Graphe {
 
     // Numero de zone de la carte
     private int numzone ;
-
+    
+    // Liste des noeuds dans un graphe
+    private ArrayList<Noeud> listeNoeuds = new ArrayList<Noeud>(); 
+    
+    // Liste des descripteurs
+    private ArrayList<Descripteur> listeDescripteurs = new ArrayList<Descripteur>(); 
+    
+    // Chemin
+    private Chemin chemin;
+    
     /*
-     * Ces attributs constituent une structure ad-hoc pour stocker les informations du graphe.
-     * Vous devez modifier et ameliorer ce choix de conception simpliste.
-     */
-    private float[] longitudes ;
-    private float[] latitudes ;
-    private Descripteur[] descripteurs ;
-
+	* Ces attributs constituent une structure ad-hoc pour stocker les informations du graphe.
+	* Vous devez modifier et ameliorer ce choix de conception simpliste.
+	*/
+    private float longitude ;
+    private float latitude ;
+    private int nb_successeur;
     
     // Deux malheureux getters.
     public Dessin getDessin() { return dessin ; }
@@ -70,61 +79,74 @@ public class Graphe {
 	    int nb_descripteurs = dis.readInt () ;
 	    int nb_nodes = dis.readInt () ;
 
+	    /*
 	    // Nombre de successeurs enregistrÃ©s dans le fichier.
 	    int[] nsuccesseurs_a_lire = new int[nb_nodes] ;
 	    
 	    // En fonction de vos choix de conception, vous devrez certainement adapter la suite.
 	    this.longitudes = new float[nb_nodes] ;
 	    this.latitudes = new float[nb_nodes] ;
-	    this.descripteurs = new Descripteur[nb_descripteurs] ;
+	    this.descripteurs = new Descripteur[nb_descripteurs] ;*/
 
 	    // Lecture des noeuds
-	    for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
-		// Lecture du noeud numero num_node
-		longitudes[num_node] = ((float)dis.readInt ()) / 1E6f ;
-		latitudes[num_node] = ((float)dis.readInt ()) / 1E6f ;
-		nsuccesseurs_a_lire[num_node] = dis.readUnsignedByte() ;
-	    }
+		for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
+			
+			// Lecture du noeud numero num_node
+			longitude = ((float)dis.readInt ()) / 1E6f ;
+			latitude = ((float)dis.readInt ()) / 1E6f ;
+			// nb de routes sortantes = nb de successeur
+			nb_successeur = dis.readUnsignedByte() ;
+			// ajouter les noeuds dans la liste
+			this.listeNoeuds.add(new Noeud(num_node, latitude, longitude, nb_successeur));
+		}
+		
+		// octet à 255 : fin lecture des noeuds
+		Utils.checkByte(255, dis) ;
+		
+		// Lecture des descripteurs
+		for (int num_descr = 0 ; num_descr < nb_descripteurs ; num_descr++) {
+			// Lecture du descripteur numero num_descr
+			listeDescripteurs.add(new Descripteur(dis));
+	
+			/*// On affiche quelques descripteurs parmi tous.
+			if (0 == num_descr % (1 + nb_descripteurs / 400))
+			    System.out.println("Descripteur " + num_descr + " = " + descripteurs[num_descr]) ;
+	    }*/
 	    
-	    Utils.checkByte(255, dis) ;
-	    
-	    // Lecture des descripteurs
-	    for (int num_descr = 0 ; num_descr < nb_descripteurs ; num_descr++) {
-		// Lecture du descripteur numero num_descr
-		descripteurs[num_descr] = new Descripteur(dis) ;
-
-		// On affiche quelques descripteurs parmi tous.
-		if (0 == num_descr % (1 + nb_descripteurs / 400))
-		    System.out.println("Descripteur " + num_descr + " = " + descripteurs[num_descr]) ;
-	    }
-	    
+		// octet à 254 : fin lecture des descripteurs
 	    Utils.checkByte(254, dis) ;
 	    
-	    // Lecture des successeurs
+	    // Lecture des successeurs (routes sortantes)
+	    
 	    for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
-		// Lecture de tous les successeurs du noeud num_node
-		for (int num_succ = 0 ; num_succ < nsuccesseurs_a_lire[num_node] ; num_succ++) {
-		    // zone du successeur
-		    int succ_zone = dis.readUnsignedByte() ;
-
-		    // numero de noeud du successeur
-		    int dest_node = Utils.read24bits(dis) ;
-
-		    // descripteur de l'arete
-		    int descr_num = Utils.read24bits(dis) ;
-
-		    // longueur de l'arete en metres
-		    int longueur  = dis.readUnsignedShort() ;
-
-		    // Nombre de segments constituant l'arete
-		    int nb_segm   = dis.readUnsignedShort() ;
+	    	// Lecture de tous les successeurs du noeud num_node
+			for (int num_succ = 0 ; num_succ < listeNoeuds.get(num_node).getNb_successeur() ; num_succ++) {
+				// zone du successeur
+			    int succ_zone = dis.readUnsignedByte() ;
+	
+			    // numero de noeud du successeur
+			    int dest_node = Utils.read24bits(dis) ;
+	
+			    // descripteur de l'arete
+			    int descr_num = Utils.read24bits(dis) ;
+	
+			    // longueur de l'arete en metres
+			    int longueur  = dis.readUnsignedShort() ;
+	
+			    // Nombre de segments constituant l'arete
+			    int nb_segm   = dis.readUnsignedShort() ;
+			    
+			    // Ajouter successeur à num_node
+			    listeNoeuds.get(num_node)
+			    
+			    
 
 		    edges++ ;
 		    
-		    Couleur.set(dessin, descripteurs[descr_num].getType()) ;
+		    Couleur.set(dessin, listeDescripteurs.get(descr_num).getType()) ;
 
-		    float current_long = longitudes[num_node] ;
-		    float current_lat  = latitudes[num_node] ;
+		    float current_long = listeNoeuds.get(num_node).getLongitude() ;
+		    float current_lat  = listeNoeuds.get(num_node).getLatitude() ;
 
 		    // Chaque segment est dessine'
 		    for (int i = 0 ; i < nb_segm ; i++) {
@@ -245,11 +267,18 @@ public class Graphe {
 
 	    int current_zone = 0 ;
 	    int current_node = 0 ;
+	    
+	    // yuanbo : création d'un chemin
+	    chemin = new Chemin(path_carte, nb_noeuds, first_node, last_node, first_zone, last_zone);
 
 	    // Tous les noeuds du chemin
 	    for (int i = 0 ; i < nb_noeuds ; i++) {
-		current_zone = dis.readUnsignedByte() ;
-		current_node = Utils.read24bits(dis) ;
+			current_zone = dis.readUnsignedByte() ;
+			current_node = Utils.read24bits(dis) ;
+			
+		//ajouter les noeuds dans le chemin
+			chemin.addNoeud(listeNoeuds.get(current_node));
+
 		System.out.println(" --> " + current_zone + ":" + current_node) ;
 	    }
 
