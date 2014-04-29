@@ -304,9 +304,10 @@ public class Graphe {
 		    System.exit(1) ;
 		}
 	    
-	    // affichage
-	    
+	   // affichage
 	   chemin.affichageInformationChemin();
+	   // dessiner le chemin sur la carte graphique
+	   chemin.dessinerChemin(dessin);
 
 	    
 	} catch (IOException e) {

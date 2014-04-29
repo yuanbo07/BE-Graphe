@@ -1,6 +1,9 @@
 package core;
 
+import java.awt.Color;
 import java.util.ArrayList;
+
+import base.Dessin;
 
 public class Chemin {
 	private int numCarte;
@@ -187,6 +190,30 @@ public class Chemin {
 	
 	public void addNoeud(Noeud n){
 		this.listeNoeudChemin.add(n);
+	}
+	
+	
+	
+	
+	// dessiner le chemin sur la carte graphique
+	
+	public void dessinerChemin(Dessin d){
+		d.setColor(Color.cyan);
+		d.setWidth(5);
+		for (int i = 0 ; i< this.listeNoeudChemin.size()-1 ; i++){
+			float longitudeCourant = this.listeNoeudChemin.get(i).getLongitude();
+			float latitudeCourant = this.listeNoeudChemin.get(i).getLatitude();
+			float longitudeSuivant = this.listeNoeudChemin.get(i+1).getLongitude();
+			float latitudeSuivant = this.listeNoeudChemin.get(i+1).getLatitude();
+		    /**
+		     *  drawLine(lon, lat1, long2, lat2)
+		     *  Trace un point.
+		     *  @param lon longitude du point
+		     *  @param lat latitude du point
+		     *  @param width grosseur du point
+		     */
+			d.drawLine(longitudeCourant, latitudeCourant, longitudeSuivant, latitudeSuivant);
+		}
 	}
 	
 	
