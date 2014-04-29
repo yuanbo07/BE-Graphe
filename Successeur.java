@@ -28,8 +28,10 @@ public class Successeur {
 		
 	}
 	
-	public float calculTempsArrete(){
-		float t = this.longueurArrete / this.descripteur.vitesseMax();
+	// le temps renvoyé est en seconde
+	
+	public double calculTempsArrete(){
+		double t = this.longueurArrete * 3600 / (this.descripteur.vitesseMax()*1000);
 		return t;
 	}
 	

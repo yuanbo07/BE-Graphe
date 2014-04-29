@@ -304,9 +304,10 @@ public class Graphe {
 		    System.exit(1) ;
 		}
 	    
+	    // affichage
 	    
-	    System.out.println("******renvoyer les informations************");
-	    System.out.println("Distance du chemin : " + chemin.DistanceEnkmToString());
+	   chemin.affichageInformationChemin();
+
 	    
 	} catch (IOException e) {
 	    e.printStackTrace() ;
