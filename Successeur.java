@@ -9,7 +9,7 @@ public class Successeur {
 	private int nb_segment;
 	private ArrayList<Segment> listeSegment = new ArrayList<Segment>();
 	private Noeud noeudDestination;
-	private int longueurArrete;
+	private double longueurArrete;
 	private Descripteur descripteur;
 	private int succ_zone;
 	
@@ -61,7 +61,7 @@ public class Successeur {
 		this.noeudDestination = noeudDestination;
 	}
 	
-	public int getLongueurArrete() {
+	public double getLongueurArrete() {
 		return longueurArrete;
 	}
 	
