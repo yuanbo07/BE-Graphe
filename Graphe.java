@@ -303,7 +303,11 @@ public class Graphe {
 		    System.out.println("Le chemin " + nom_chemin + " ne termine pas sur le bon noeud.") ;
 		    System.exit(1) ;
 		}
-
+	    
+	    
+	    System.out.println("******renvoyer les informations************");
+	    System.out.println("Distance du chemin : " + chemin.DistanceEnkmToString());
+	    
 	} catch (IOException e) {
 	    e.printStackTrace() ;
 	    System.exit(1) ;

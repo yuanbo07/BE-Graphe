@@ -24,8 +24,8 @@ public class Chemin {
 		this.zoneDestination = zoneDestination;
 	}
 	
+	// renvoyer une liste de tous successeurs qui définient plus d'un chemin entre deux noeuds (multi-chemin)
 	
-	// renvoyer une liste de successeurs qui définient plus d'un chemin entre deux noeuds (multi-chemin)
 	public ArrayList<Successeur> getListeSuccMultiChemin(Noeud noeudCourant, Noeud noeudSuivant){
 		ArrayList<Successeur> listeSuccMultiChemin = new ArrayList<Successeur>();
 		for (Successeur succ : noeudCourant.getListeSuccesseur()){
@@ -37,6 +37,7 @@ public class Chemin {
 	
 	
 	// On cherche l'arrête la plus courte en distance, puis renvoyer ce successeur
+	
 	public Successeur getSuccPlusCourtArrete(Noeud noeudCourant, Noeud noeudSuivant){
 		// coût de plus courte arrête entre deux noeuds successifs
 		int coutDistanceArrete = 0;
@@ -60,9 +61,10 @@ public class Chemin {
 	}
 
 	// On cherche l'arrête plus courte en temps, puis renvoyer ce successeur
+	
 	public Successeur getSuccPlusCourtTemps(Noeud noeudCourant, Noeud noeudSuivant){
 		// coût de plus courte arrête entre deux noeuds successifs
-		float coutTempsArrete = 0;
+		double coutTempsArrete = 0;
 		// liste qui stocke les successeurs à comparer
 		ArrayList<Successeur> listeSuccAComparer = new ArrayList<Successeur>();
 		// iterator
@@ -74,14 +76,60 @@ public class Chemin {
 		// on initialise le cout en temps de premiere arrete qu'on a (reste à retoucher)
 		coutTempsArrete = listeSuccAComparer.get(0).calculTempsArrete();
 		for (i=0;i<listeSuccAComparer.size();i++){
-			float coutTempsCorant = listeSuccAComparer.get(i).calculTempsArrete();
-			if (coutTempsCorant < coutTempsArrete)
-				coutTempsArrete = coutTempsCorant;
+			double coutTempsCourant = listeSuccAComparer.get(i).calculTempsArrete();
+			if (coutTempsCourant < coutTempsArrete)
+				coutTempsArrete = coutTempsCourant;
 				s = listeSuccAComparer.get(i);
 		}
 		return s;
 	}
 	
+	
+	// pour obtenir un chemin plus court en distance entre noeudDepart et noeudDestination
+	
+	public void calculCheminPlusCourtDistance(){
+		// les deux noeuds qui vont parcourir tout le chemin
+		Noeud noeudCourant;
+		Noeud noeudSuivant;
+		int coutDistanceArrete = 0;
+		double coutTempsArrete = 0;
+		int coutDistance = 0;
+		double coutTemps = 0;
+		int i = 0;
+
+		// on prend toujours le plus courte arrête entre deux noeuds successifs
+		for (i=0;i<listeNoeudChemin.size()-1;i++){
+			noeudCourant = listeNoeudChemin.get(i);
+			noeudSuivant = listeNoeudChemin.get(i+1);
+			coutDistanceArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).getLongueurArrete();
+			coutTempsArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).calculTempsArrete();
+			coutDistance += coutDistanceArrete;
+			coutTemps += coutTempsArrete;
+		}
+		this.coutDistanceChemin = coutDistance;
+	}
+	
+	// mettre en forme la distance en km et renvoyer le String
+	
+	public String DistanceEnkmToString() {
+		
+		calculCheminPlusCourtDistance();
+		
+		String s = null;
+		double distance = this.getCoutDistanceChemin();
+		
+		if(distance >= 1000) {
+			s = distance/1000 + " km";
+		}
+		else{
+			s = distance + " m";
+		}
+		return s;
+	}
+	
+	//à compléter
+	public void calculCheminPlusCourtTemps(){
+	}
 	
 	public void addNoeud(Noeud n){
 		this.listeNoeudChemin.add(n);
