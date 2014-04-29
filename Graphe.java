@@ -314,5 +314,11 @@ public class Graphe {
 	    System.exit(1) ;
 	}
     }
+    
+    // getters & setters
+    
+	public String getNomCarte() {
+		return nomCarte;
+	}
 
 }
