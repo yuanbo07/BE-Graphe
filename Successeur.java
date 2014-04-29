@@ -13,6 +13,8 @@ public class Successeur {
 	private Descripteur descripteur;
 	private int succ_zone;
 	
+	// constructeurs
+	
 	public Successeur(int nb_segment, Noeud noeudDestination, int longueurArrete, Descripteur descripteur, int succ_zone){
 		super();
 		this.nb_segment = nb_segment;
@@ -22,7 +24,15 @@ public class Successeur {
 		this.succ_zone = succ_zone;
 	}
 
-
+	public Successeur(){
+		
+	}
+	
+	public float calculTempsArrete(){
+		float t = this.longueurArrete / this.descripteur.vitesseMax();
+		return t;
+	}
+	
 	// getter & setter
 	
 	public int getNb_segment() {
