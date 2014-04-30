@@ -24,4 +24,39 @@ public class Label {
 		this.marquage = false;
 	}
 
+	
+	// getters & setters
+	
+	public Noeud getSommetCourant() {
+		return sommetCourant;
+	}
+
+	public void setSommetCourant(Noeud sommetCourant) {
+		this.sommetCourant = sommetCourant;
+	}
+
+	public Noeud getSommetPere() {
+		return sommetPere;
+	}
+
+	public void setSommetPere(Noeud sommetPere) {
+		this.sommetPere = sommetPere;
+	}
+
+	public double getCoutCourant() {
+		return coutCourant;
+	}
+
+	public void setCoutCourant(double coutCourant) {
+		this.coutCourant = coutCourant;
+	}
+
+	public boolean isMarquage() {
+		return marquage;
+	}
+
+	public void setMarquage(boolean marquage) {
+		this.marquage = marquage;
+	}
+
 }
