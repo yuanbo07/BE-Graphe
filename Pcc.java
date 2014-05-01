@@ -41,25 +41,30 @@ public class Pcc extends Algo {
 	 * 
 	 */
 	
+	// fonctions qui vérifient la bonne saisie de numéro de noeuds
 	
-    // phase d'initialisation : on met tous les noeuds "non marqué" 
-	
-	
-	public void verifierSaisirNoeudDepartEtDest(){
-    	int i =0;
+	public boolean verifierSaisirNoeudDepart(){
     	boolean trouveOrigine = false;
-    	boolean trouveDest = false;
+    	int i=0;
 		for (; i<numNoeudGraphe ; i++){
     		if(this.graphe.getListeNoeuds().get(i).getId_noeud() == origine)
     			trouveOrigine = true;
+		}
+		return trouveOrigine;
+	}
+	
+	public boolean verifierSaisirNoeudDest(){
+    	boolean trouveDest = false;
+    	int i=0;
+		for (; i<numNoeudGraphe ; i++){
     		if(this.graphe.getListeNoeuds().get(i).getId_noeud() == destination)
     			trouveDest = true;
 		}
-		if (!trouveOrigine)
-			System.out.println("Le sommet d'origine que vous avez indiqué n'est pas dans cette carte.");
-		if (!trouveDest)
-			System.out.println("Le sommet destination que vous avez indiqué n'est pas dans cette carte.");
+		return trouveDest;
 	}
+	
+	
+    // phase d'initialisation : on met tous les noeuds "non marqué" 
 	
     public void initialisation(){
     	
@@ -77,8 +82,6 @@ public class Pcc extends Algo {
     			listeLabel.add(new Label(origine, -1, 0, false));
     		else
     			listeLabel.add(new Label(i));
-    		
-    		
     	}
     }
     
@@ -87,14 +90,23 @@ public class Pcc extends Algo {
     
     public void algoDijkstra(){
     	
-    	
     }
 
     public void run() {
 
 		System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
-		this.verifierSaisirNoeudDepartEtDest();
-		this.initialisation();
+		
+		//
+
+		if (verifierSaisirNoeudDepart())
+			System.out.println("Le sommet d'origine " + origine + " n'existe pas dans cette carte.");
+		else if (verifierSaisirNoeudDest())
+			System.out.println("Le sommet destination " + destination + " n'existe pas dans cette carte.");
+		else if (origine == destination)
+			System.out.println("Le plus court chemin est 0.");
+		else {
+			algoDijkstra();
+		}
 	
     }
 
