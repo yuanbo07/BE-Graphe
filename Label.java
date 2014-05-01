@@ -2,31 +2,39 @@ package core;
 
 public class Label implements Comparable<Label> {
 	
-	
-	/* Pour mettre en oeuvre l'algorithme de Dijkstra, on associe à chaque sommet un label composé d'un quadruplet 
-	 * (marquage, cout, pere, sommet courant)
-	 * 
+	/*
 	 * marquage : un booléen (valant vrai si le sommet est définitivement fixé par l'algorithme)
-	 * cout : la valeur courante du plus court chemin depuis l'origine vers le sommet
-	 * pere : correspond au sommet précédent sur le chemin correspondant au plus court chemin courant
-	 * Le sommet courant est le sommet associé à ce label (sommet ou numéro de sommet)
+	 * sommetCourant: le sommet associé à ce label (sommet ou numéro de sommet)
+	 * sommetPere : le sommet précédent sur le chemin correspondant au plus court chemin courant
+	 * coutCourant : la valeur courante du plus court chemin depuis l'origine vers le sommet
 	 */
 	
-	private Noeud sommetCourant;
-	private Noeud sommetPere;
+	private int id_sommetCourant;
+	private int id_sommetPere;
 	private double coutCourant;
 	private boolean marquage;
 	
-	public Label(Noeud sommetCourant, Noeud sommetPere, double coutCourant){
-		this.sommetCourant = sommetCourant;
-		this.sommetPere = sommetPere;
-		this.coutCourant = coutCourant;
+	// un label créé par défault : pas de père, coût infini, pas marqué
+	
+	public Label(int id_sommetCourant){
+		this.id_sommetCourant = id_sommetCourant;
+		this.id_sommetPere = -1;
+		this.coutCourant = Double.MAX_VALUE;
 		this.marquage = false;
 	}
+	
+	public Label(int id_sommetCourant, int id_sommetPere, double coutCourant, boolean marquage){
+		this.id_sommetCourant = id_sommetCourant;
+		this.id_sommetPere = id_sommetPere;
+		this.coutCourant = coutCourant;
+		this.marquage = marquage;
+	}
+	
+
 
 	// Compares this object with the specified object for order. 
 	// Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. 
-	@Override
+	
 	public int compareTo(Label lb1) {
 		if(this.getCoutCourant() == lb1.getCoutCourant())
 			return 0;
@@ -38,22 +46,6 @@ public class Label implements Comparable<Label> {
 	
 	// getters & setters
 	
-	public Noeud getSommetCourant() {
-		return sommetCourant;
-	}
-
-	public void setSommetCourant(Noeud sommetCourant) {
-		this.sommetCourant = sommetCourant;
-	}
-
-	public Noeud getSommetPere() {
-		return sommetPere;
-	}
-
-	public void setSommetPere(Noeud sommetPere) {
-		this.sommetPere = sommetPere;
-	}
-
 	public double getCoutCourant() {
 		return coutCourant;
 	}
@@ -62,7 +54,7 @@ public class Label implements Comparable<Label> {
 		this.coutCourant = coutCourant;
 	}
 
-	public boolean isMarquage() {
+	public boolean isMarque() {
 		return marquage;
 	}
 
@@ -70,7 +62,19 @@ public class Label implements Comparable<Label> {
 		this.marquage = marquage;
 	}
 
+	public int getId_sommetCourant() {
+		return id_sommetCourant;
+	}
 
+	public void setId_sommetCourant(int id_sommetCourant) {
+		this.id_sommetCourant = id_sommetCourant;
+	}
 
+	public int getId_sommetPere() {
+		return id_sommetPere;
+	}
 
+	public void setId_sommetPere(int id_sommetPere) {
+		this.id_sommetPere = id_sommetPere;
+	}
 }

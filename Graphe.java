@@ -79,15 +79,6 @@ public class Graphe {
 	    int nb_descripteurs = dis.readInt () ;
 	    int nb_nodes = dis.readInt () ;
 
-	    /*
-	    // Nombre de successeurs enregistrÃ©s dans le fichier.
-	    int[] nsuccesseurs_a_lire = new int[nb_nodes] ;
-	    
-	    // En fonction de vos choix de conception, vous devrez certainement adapter la suite.
-	    this.longitudes = new float[nb_nodes] ;
-	    this.latitudes = new float[nb_nodes] ;
-	    this.descripteurs = new Descripteur[nb_descripteurs] ;*/
-
 	    // Lecture des noeuds
 		for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
 			
@@ -108,11 +99,6 @@ public class Graphe {
 			// Lecture du descripteur numero num_descr
 			listeDescripteurs.add(new Descripteur(dis));
 		}
-	
-			/*// On affiche quelques descripteurs parmi tous.
-			if (0 == num_descr % (1 + nb_descripteurs / 400))
-			    System.out.println("Descripteur " + num_descr + " = " + descripteurs[num_descr]) ;
-	    }*/
 	    
 		// octet à 254 : fin lecture des descripteurs
 	    Utils.checkByte(254, dis) ;
@@ -321,5 +307,10 @@ public class Graphe {
 	public String getNomCarte() {
 		return nomCarte;
 	}
+	
+	public ArrayList<Noeud> getListeNoeuds() {
+		return listeNoeuds;
+	}
+
 
 }
