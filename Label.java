@@ -1,6 +1,6 @@
 package core;
 
-public class Label {
+public class Label implements Comparable<Label> {
 	
 	
 	/* Pour mettre en oeuvre l'algorithme de Dijkstra, on associe à chaque sommet un label composé d'un quadruplet 
@@ -24,6 +24,17 @@ public class Label {
 		this.marquage = false;
 	}
 
+	// Compares this object with the specified object for order. 
+	// Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. 
+	@Override
+	public int compareTo(Label lb1) {
+		if(this.getCoutCourant() == lb1.getCoutCourant())
+			return 0;
+		else if(this.getCoutCourant() > lb1.getCoutCourant())
+			return 1;
+		else
+			return -1;
+	}
 	
 	// getters & setters
 	
@@ -58,5 +69,8 @@ public class Label {
 	public void setMarquage(boolean marquage) {
 		this.marquage = marquage;
 	}
+
+
+
 
 }

@@ -14,13 +14,20 @@ public class Pcc extends Algo {
 
     public Pcc(Graphe gr, PrintStream sortie, Readarg readarg) {
 	super(gr, sortie, readarg) ;
+	
+	// Demander la zone et le sommet départ.
 
 	this.zoneOrigine = gr.getZone () ;
 	this.origine = readarg.lireInt ("Numero du sommet d'origine ? ") ;
 
 	// Demander la zone et le sommet destination.
-	this.zoneOrigine = gr.getZone () ;
+	this.zoneDestination = gr.getZone () ;
 	this.destination = readarg.lireInt ("Numero du sommet destination ? ");
+    }
+    
+    public void initialisation(){
+    	BinaryHeap<Label> heapLabel= new BinaryHeap<Label>();
+    	
     }
 
     public void run() {
@@ -28,6 +35,8 @@ public class Pcc extends Algo {
 	System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
 
 	// A vous d'implementer la recherche de plus court chemin.
+	
+	
     }
 
 }
