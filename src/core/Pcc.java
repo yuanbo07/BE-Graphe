@@ -136,6 +136,10 @@ public class Pcc extends Algo {
 			    		}
 		        	} 
 	    	}
+	    	else{
+		    		System.out.println("Il n'existe pas de chemin entre noueud "+ origine + " et noeud " +destination);
+		    		break;
+	    	}
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
     }
 
