@@ -99,7 +99,9 @@ public class Pcc extends Algo {
         	/* 
         	 * phase déroulement algo Dijkstra
         	 */
-    		
+
+		do{
+		
     	// si le tas n'est pas vide
     	if(!(tasLabel.isEmpty())) {
         	// on choisie label ayant le plus petit cout dans le tas
@@ -107,21 +109,19 @@ public class Pcc extends Algo {
         	Noeud noeudCourant = this.graphe.getListeNoeuds().get(labelCourant.getId_sommetCourant());
         	// on le marque
         	labelCourant.setMarquage(true);
-    			System.out.println("1");
 	        	// pour tous ses successeurs (tous les arcs sortants)
 	        	for (Successeur succ : noeudCourant.getListeSuccesseur()){
 	        		// on choisie le noeud succ courant
 	        		Noeud noeudSuccCourant = succ.getNoeudDestination();
 	        		// on a son label
-	        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant);
+	        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
+	        		System.out.println("" + labelNoeudSuccCourant.getId_sommetCourant());
 	        		// si ce noeud successeur n'est pas encore marqué
-	    			System.out.println("2");
 		    		if(!labelNoeudSuccCourant.isMarque()){
 		    			double cout = 0;
 		    			// on met à jour son cout courant (de sommet d'origine jusqu'ici)
 		    			cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
 		    			// si cette fois, le cout total obtenu est inférieur à son cout total avant
-		    			System.out.println("3");
 		    			if (cout < labelNoeudSuccCourant.getCoutCourant()) {
 		    				// on remplace l'ancien cout avec ce nouveau cout total 
 		    				labelNoeudSuccCourant.setCoutCourant(cout);
@@ -131,7 +131,6 @@ public class Pcc extends Algo {
 		    			
 		    			// si ce noeud n'est pas dans le tas
 		    			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
-			    			System.out.println("4");
 		    				// on met ce label dans le tas
 		    				tasLabel.insert(labelNoeudSuccCourant);
 		    				// on dessine un segment entre noeudCourant et son succCourant
@@ -144,7 +143,8 @@ public class Pcc extends Algo {
 		    		}
 	        	} 
     		}
-    	}
+    	}while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
+    }
 
     public void run() {
 
