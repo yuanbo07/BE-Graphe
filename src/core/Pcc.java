@@ -2,7 +2,6 @@ package core ;
 
 import java.awt.Color;
 import java.io.* ;
-import java.util.ArrayList;
 import java.util.HashMap;
 import base.Readarg ;
 
@@ -59,8 +58,6 @@ public class Pcc extends Algo {
 		}
 		return trouveDest;
 	}
-    
-  
 	
 	// fonction qui initialise le tas et met labels des sommets dans hashmap
 	
@@ -108,6 +105,7 @@ public class Pcc extends Algo {
 		        		// on a son label à partir de son id
 		        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
 		        		System.out.println("" + labelNoeudSuccCourant.getId_sommetCourant());
+		        		
 		        		// si ce noeud successeur n'est pas encore marqué
 			    		if(!labelNoeudSuccCourant.isMarque()){
 			    			double cout = 0;
@@ -119,13 +117,16 @@ public class Pcc extends Algo {
 			    				labelNoeudSuccCourant.setCoutCourant(cout);
 			    				// on change son père à ce nouveau noeud 
 			    				labelNoeudSuccCourant.setId_sommetPere(noeudCourant.getId_noeud());
-			    				// on met à jour le tas
-					    		tasLabel.update(labelNoeudSuccCourant);
 			    			}
 			    			
-			    			// si ce noeud n'est pas dans le tas
-			    			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
-			    				// on met ce label dans le tas
+			    			// si ce noeud est déjà dans le tas
+			    			if(tasLabel.isInHeap(labelNoeudSuccCourant)){
+		    				// on met à jour le tas pour éventuel changement de cout de noeud courant
+					    		tasLabel.update(labelNoeudSuccCourant);
+				    		}
+			    			// sinon
+			    			else{
+			    				// on le met dans le tas
 			    				tasLabel.insert(labelNoeudSuccCourant);
 			    				// on dessine un segment entre noeudCourant et son succCourant
 								this.graphe.getDessin().setColor(Color.cyan);
