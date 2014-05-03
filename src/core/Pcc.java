@@ -7,17 +7,17 @@ import base.Readarg ;
 
 public class Pcc extends Algo {
 
-    // Numero des sommets origine et destination
+    // numéro des sommets origine et destination
     protected int zoneOrigine ;
     protected int origine ;
 
     protected int zoneDestination ;
     protected int destination ;
     
-    // pour mettre en correspondance le numéro de noeud et son label
+    // HashMap qui met en correspondance le numéro de noeud et son label
     private HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
     
-	// on a le tas pour y mettre tous les labels (pour ordonner le coutCourant)
+	// on a le tas pour y mettre tous les labels (pour ordonner le coût courant)
 	BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
 	
 	// nombre de sommets dans le graphe
@@ -32,24 +32,25 @@ public class Pcc extends Algo {
 	// le nombre de sommets marqués
 	private int nbMarque;
 	
-	// le nombre de sommets parcourus (placé dans le tas)
+	// le nombre de sommets parcourus (id. placé dans le tas)
 	private int nbParcouru;
 	
+	
+	// fonction qui lit les paramètres d'entrée
 	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg) {
 		super(gr, sortie, readarg) ;
 		
-		// Demander la zone et le sommet départ.
-	
+		// demander la zone et le sommet départ.
 		this.zoneOrigine = gr.getZone () ;
 		this.origine = readarg.lireInt ("Numero du sommet d'origine ? ") ;
 	
-		// Demander la zone et le sommet destination.
+		// demander la zone et le sommet destination.
 		this.zoneDestination = gr.getZone () ;
 		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
     }
 	
-	// fonctions qui vérifient la bonne saisie de numéro de noeuds
 	
+	// fonctions qui vérifient la bonne saisie du numéro de noeud départ / destination
 	public boolean verifierSaisirNoeudDepart(){
     	boolean trouveOrigine = false;
     	int i=0;
@@ -70,12 +71,10 @@ public class Pcc extends Algo {
 		return trouveDest;
 	}
 	
-	// fonction qui initialise le tas et met labels des sommets dans hashmap
 	
+	// initialise le tas, et met les labels des sommets dans le hashmap
 	public void initialisationAlgoDijkstra(){
-		
  	    int i = 0;
- 	    
     	// on met labels de tous les noeuds dans la map correspondance Noeud-Label
     	for (; i<numNoeudGraphe ; i++){
     		int numNoeudCourant = this.graphe.getListeNoeuds().get(i).getId_noeud();
@@ -93,14 +92,13 @@ public class Pcc extends Algo {
 	}
     	
     	
-    // algorithme de dijkstra avec le tas
-    
+    // algorithme de Dijkstra avec le tas, complexité : o(nlogn) 
     public void algoDijkstra(){
     	
     	// initialiser
     	this.initialisationAlgoDijkstra();
   
-    	// tourner l'algo jusqu'à noeud destination soit marqué
+    	// tourner l'algo jusqu'à le noeud destination soit marqué
 		do{
 	    	// si le tas n'est pas vide
 	    	if(!(tasLabel.isEmpty())) {
@@ -114,28 +112,28 @@ public class Pcc extends Algo {
 	        	Noeud noeudCourant = this.graphe.getListeNoeuds().get(labelCourant.getId_sommetCourant());
 		        	// pour tous ses successeurs (tous les arcs sortants)
 		        	for (Successeur succ : noeudCourant.getListeSuccesseur()){
-		        		// on choisie le noeud succ courant
+		        		// on choisie le noeud successeur courant
 		        		Noeud noeudSuccCourant = succ.getNoeudDestination();
-		        		// on a son label à partir de son id
+		        		// on obtient son label à partir de son id
 		        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
 		        		System.out.println("" + labelNoeudSuccCourant.getId_sommetCourant());
 		        		
-		        		// si ce noeud successeur n'est pas encore marqué
+		        		// si ce noeud successeur n'est pas encore marqué par l'algo
 			    		if(!labelNoeudSuccCourant.isMarque()){
 			    			double cout = 0;
-			    			// on met à jour son cout courant (de sommet d'origine jusqu'ici)
+			    			// on met à jour son coût courant (de sommet d'origine jusqu'ici)
 			    			cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
-			    			// si cette fois, le cout total obtenu est inférieur à son cout total avant
+			    			// si cette fois, le coût total obtenu est inférieur à son coût total avant
 			    			if (cout < labelNoeudSuccCourant.getCoutCourant()) {
-			    				// on remplace l'ancien cout avec ce nouveau cout total 
+			    				// on remplace l'ancien coût avec ce nouveau coût total 
 			    				labelNoeudSuccCourant.setCoutCourant(cout);
-			    				// on change son père à ce nouveau noeud 
+			    				// on change son père à ce noeud courant 
 			    				labelNoeudSuccCourant.setId_sommetPere(noeudCourant.getId_noeud());
 			    			}
 			    			
-			    			// si ce noeud est déjà dans le tas
+			    			// si ce noeud est déjà présent dans le tas
 			    			if(tasLabel.isInHeap(labelNoeudSuccCourant)){
-		    				// on met à jour le tas pour éventuel changement de cout de noeud courant
+		    				// on met à jour le tas pour l'éventuel changement de coût de ce noeud courant
 					    		tasLabel.update(labelNoeudSuccCourant);
 				    		}
 			    			// sinon
@@ -146,8 +144,8 @@ public class Pcc extends Algo {
 			    				nbMaxTas++;
 			    				updateNbElementMaxTas();
 			    				// on dessine un segment entre noeudCourant et son succCourant
-								this.graphe.getDessin().setColor(Color.GREEN);
-								this.graphe.getDessin().setWidth(5);
+								this.graphe.getDessin().setColor(Color.BLUE);
+								this.graphe.getDessin().setWidth(2);
 								this.graphe.getDessin().drawLine(noeudCourant.getLongitude(), noeudCourant.getLatitude(), noeudSuccCourant.getLongitude(), noeudSuccCourant.getLatitude());
 			    			}
 			    		}
@@ -160,19 +158,19 @@ public class Pcc extends Algo {
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
     }
     
-    // fonction qui met à jour le nb maximal des elements dans le tas
     
+    // fonction qui met à jour le nombre maximal des elements dans le tas
     public void updateNbElementMaxTas(){
     	if(tasLabel.size() > nbMaxTas)
     		nbMaxTas = tasLabel.size();
     }
     
-    // afficher le plus court chemin
     
+    // construire le plus court chemin
     public void construirePlusCourtChemin(){
     	Noeud noeudDepart = this.graphe.getListeNoeuds().get(origine);
     	Noeud noeudDestination = this.graphe.getListeNoeuds().get(destination);
-    	// on met d'abords le noeud de distination dans le chemin
+    	// on met d'abords le noeud de distination dans le chemin, on cherche dans le sens inverse
     	plusCourtChemin.addNoeud(noeudDestination);	
     	Label labelCourant = mapCorrespondanceNoeudLabel.get(destination);
     	
@@ -189,12 +187,14 @@ public class Pcc extends Algo {
     	// on met le chemin dans la bonne ordre
 		plusCourtChemin.renverserChemin();
 		
-    	// compléter information de PCC
+    	// compléter les information de PCC
     	plusCourtChemin.setNoeudDepart(noeudDepart);
     	plusCourtChemin.setNoeudDestination(noeudDestination);
     	plusCourtChemin.setNbNoeud(plusCourtChemin.getListeNoeudChemin().size());
     }
     
+    
+    // afficher des informations du chemin, et dessiner le PCC obtenu
     public void afficherPCC(){    	
     	// on construit le chemin
     	construirePlusCourtChemin();
@@ -218,40 +218,31 @@ public class Pcc extends Algo {
 		System.out.println("Le nombre des sommets marqués : " + nbMarque);
 		
     	// affichage distance de PCC
-		System.out.println("La distance de PCC : " + plusCourtChemin.getCoutEnDistanceChemin());
+		System.out.println("La distance de PCC : " + plusCourtChemin.obetnircoutEnDistanceChemin());
 		
     	// affichage temps de PCC
-		System.out.println("Le temps de PCC : " + plusCourtChemin.getCoutEnTempsChemin());
+		System.out.println("Le temps de PCC : " + plusCourtChemin.obetnircoutEnTempsChemin());
+		
+		plusCourtChemin.affichageInformationChemin();
 		
 		// dessiner le chemin sur la carte
 		plusCourtChemin.dessinerChemin(this.graphe.getDessin());
 		
-
-		
     }
     
-    public void afficher2(){
-
-
-		System.out.println("nb succ: " + plusCourtChemin.getNoeudDepart().getListeSuccesseur().size());
-		System.out.println("cout en distance: " + plusCourtChemin.getCoutEnDistanceChemin());
-		System.out.println("cout en temps: " + plusCourtChemin.getCoutEnTempsChemin());
-    }
-
-   
+    // fonction principale qui lance l'algo et afficher les résultats
     public void run() {
 
 		System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
 		
 		// si la saisie est erronée, inutile de lancer Dijkstra
-
 		if (!verifierSaisirNoeudDepart())
 			System.out.println("Le sommet d'origine " + origine + " n'existe pas dans cette carte.");
 		else if (!verifierSaisirNoeudDest())
 			System.out.println("Le sommet destination " + destination + " n'existe pas dans cette carte.");
 		else if (origine == destination)
 			System.out.println("Le plus court chemin est 0.");
-		// si la saisie est bonne, lancer Dijkstra
+		// si la saisie est bonne, on lance Dijkstra
 		else {
 			algoDijkstra();
 			afficherPCC();

@@ -8,16 +8,16 @@ import base.Dessin;
 
 public class Chemin {
 	private int numCarte;
-	protected int nbNoeud;
+	private int nbNoeud;
 	private Noeud noeudDepart;
 	private Noeud noeudDestination;
 	private int zoneDepart;
 	private int zoneDestination;
-	protected ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
-	protected double coutEnTempsChemin;
-	protected double distanceCoutEnTempsChemin;
-	protected double coutEnDistanceChemin;
-	protected double tempsCoutEnDistanceChemin;
+	private ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
+	private double coutEnTempsChemin = 0;
+	private double distanceCoutEnTempsChemin = 0;
+	private double coutEnDistanceChemin = 0;
+	private double tempsCoutEnDistanceChemin = 0;
 
 	// Constructeur
 	
@@ -229,6 +229,18 @@ public class Chemin {
 		}
 	}
 	
+	// les deux fonctions qui retournent résultats en bonne unité
+	
+	public String obetnircoutEnDistanceChemin(){
+		calculCheminPlusCourtDistance();
+		return distanceEnkmToString(coutEnDistanceChemin);
+	}
+	
+	public String obetnircoutEnTempsChemin(){
+		calculCheminPlusCourtTemps();
+		return tempsEnMinToString(tempsCoutEnDistanceChemin);
+	}
+	
 	
 	// cette fonction gère affichage
 	
@@ -243,11 +255,11 @@ public class Chemin {
 	    System.out.println("Ce chemin contient " + getNbNoeud() + " noeuds.");
 	    System.out.println("Ce chemin contient " + getListeSuccMultiChemin(noeudDepart, noeudDestination).size() + " multi-chemin.");
 	    System.out.println("Cas 1 : Le coût d'un chemin en distance :");
-	    System.out.println("Distance du chemin : " + distanceEnkmToString(coutEnDistanceChemin));
+	    System.out.println("Distance du chemin : " + obetnircoutEnDistanceChemin());
 	    System.out.println("Le temps dans ce cas : " + tempsEnMinToString(tempsCoutEnDistanceChemin));
 	    System.out.println();
 	    System.out.println("Cas 2 : Le coût d'un chemin en temps:");
-	    System.out.println("Temps du chemin : " + tempsEnMinToString(coutEnTempsChemin));
+	    System.out.println("Temps du chemin : " + obetnircoutEnTempsChemin());
 	    System.out.println("La distance dans ce cas : " + distanceEnkmToString(distanceCoutEnTempsChemin));
 	    System.out.println();
 	}
