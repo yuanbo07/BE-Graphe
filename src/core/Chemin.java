@@ -8,16 +8,16 @@ import base.Dessin;
 
 public class Chemin {
 	private int numCarte;
-	private int nbNoeud;
+	protected int nbNoeud;
 	private Noeud noeudDepart;
 	private Noeud noeudDestination;
 	private int zoneDepart;
 	private int zoneDestination;
-	private ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
-	private double coutEnTempsChemin;
-	private double distanceCoutEnTempsChemin;
-	private double coutEnDistanceChemin;
-	private double tempsCoutEnDistanceChemin;
+	protected ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
+	protected double coutEnTempsChemin;
+	protected double distanceCoutEnTempsChemin;
+	protected double coutEnDistanceChemin;
+	protected double tempsCoutEnDistanceChemin;
 
 	// Constructeur
 	
@@ -33,6 +33,9 @@ public class Chemin {
 	public Chemin(Noeud noeudDepart, Noeud noeudDestination){
 		this.noeudDepart = noeudDepart;
 		this.noeudDestination = noeudDestination;
+	}
+	
+	public Chemin(){
 	}
 	
 	// renvoyer une liste de tous successeurs qui définient plus d'un chemin entre deux noeuds (multi-chemin)
@@ -196,14 +199,14 @@ public class Chemin {
 	
 	public void addNoeud(Noeud n){
 		this.listeNoeudChemin.add(n);
+		nbNoeud ++;
 	}
 	
 	// pour renverser un chemin
 	
 	public void renverserChemin(){
-		Collections.reverse(this.listeNoeudChemin);
+		Collections.reverse(listeNoeudChemin);
 	}
-	
 	
 	// dessiner le chemin sur la carte graphique
 	

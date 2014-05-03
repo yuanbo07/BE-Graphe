@@ -3,7 +3,6 @@ package core ;
 import java.awt.Color;
 import java.io.* ;
 import java.util.HashMap;
-
 import base.Readarg ;
 
 public class Pcc extends Algo {
@@ -28,10 +27,13 @@ public class Pcc extends Algo {
 	private int nbMaxTas;
 	
 	// le plus court chemin obtenu par algorithme de Dijkstra
-	private Chemin plusCourtChemin;
+	private Chemin plusCourtChemin = new Chemin();
 	
 	// le nombre de sommets marqués
 	private int nbMarque;
+	
+	// le nombre de sommets parcourus (placé dans le tas)
+	private int nbParcouru;
 	
 	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg) {
 		super(gr, sortie, readarg) ;
@@ -82,6 +84,7 @@ public class Pcc extends Algo {
     			Label labelOrigine = new Label(origine, -1, 0, false) ;
     			mapCorrespondanceNoeudLabel.put(numNoeudCourant, labelOrigine);
     			tasLabel.insert(labelOrigine);
+    			nbParcouru++;
     		}
     		else {
     			mapCorrespondanceNoeudLabel.put(numNoeudCourant, new Label(i));
@@ -139,6 +142,7 @@ public class Pcc extends Algo {
 			    			else{
 			    				// on le met dans le tas
 			    				tasLabel.insert(labelNoeudSuccCourant);
+			    				nbParcouru++;
 			    				nbMaxTas++;
 			    				updateNbElementMaxTas();
 			    				// on dessine un segment entre noeudCourant et son succCourant
@@ -154,9 +158,6 @@ public class Pcc extends Algo {
 		    		break;
 	    	}
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
-		
-		System.out.println("Le nombre maximal dans le tas est : " + nbMaxTas);
-		System.out.println();
     }
     
     // fonction qui met à jour le nb maximal des elements dans le tas
@@ -168,11 +169,9 @@ public class Pcc extends Algo {
     
     // afficher le plus court chemin
     
-    public void afficherPlusCourtChemin(){
-    	
+    public void construirePlusCourtChemin(){
     	Noeud noeudDepart = this.graphe.getListeNoeuds().get(origine);
     	Noeud noeudDestination = this.graphe.getListeNoeuds().get(destination);
-    	Chemin plusCourtChemin = new Chemin(noeudDepart, noeudDestination);
     	// on met d'abords le noeud de distination dans le chemin
     	plusCourtChemin.addNoeud(noeudDestination);	
     	Label labelCourant = mapCorrespondanceNoeudLabel.get(destination);
@@ -186,13 +185,60 @@ public class Pcc extends Algo {
     			plusCourtChemin.addNoeud(noeudCourant);
     			labelCourant = mapCorrespondanceNoeudLabel.get(labelCourant.getId_sommetPere());
     		}
-    		// on renverse le chemin afin qu'il soit origine->destination
-    		plusCourtChemin.renverserChemin();
     	}
-		plusCourtChemin.dessinerChemin(this.graphe.getDessin());
+    	// on met le chemin dans la bonne ordre
+		plusCourtChemin.renverserChemin();
+		
+    	// compléter information de PCC
+    	plusCourtChemin.setNoeudDepart(noeudDepart);
+    	plusCourtChemin.setNoeudDestination(noeudDestination);
+    	plusCourtChemin.setNbNoeud(plusCourtChemin.getListeNoeudChemin().size());
     }
     
+    public void afficherPCC(){    	
+    	// on construit le chemin
+    	construirePlusCourtChemin();
+    	
+    	// affichage le nombre noeuds dans le plus court chemin
+		System.out.println("size :" + plusCourtChemin.getListeNoeudChemin().size());
+		
+    	// affichage tous les noeuds dans le plus court chemin
+		for (int i=0;i < plusCourtChemin.getNbNoeud();i++)
+		{
+			System.out.println("Le sommet " + i + " de PCC est : " + plusCourtChemin.getListeNoeudChemin().get(i).getId_noeud());
+		}
+		
+    	// affichage nombre noeuds parcourus
+		System.out.println("Le nombre de sommets parcourus est : " + nbParcouru);
+		
+    	// affichage nombre max de noeuds dans le tas
+		System.out.println("Le nombre maximal des sommets dans le tas est : " + nbMaxTas);
+		
+    	// affichage nombre noeuds marqué
+		System.out.println("Le nombre des sommets marqués : " + nbMarque);
+		
+    	// affichage distance de PCC
+		System.out.println("La distance de PCC : " + plusCourtChemin.getCoutEnDistanceChemin());
+		
+    	// affichage temps de PCC
+		System.out.println("Le temps de PCC : " + plusCourtChemin.getCoutEnTempsChemin());
+		
+		// dessiner le chemin sur la carte
+		plusCourtChemin.dessinerChemin(this.graphe.getDessin());
+		
 
+		
+    }
+    
+    public void afficher2(){
+
+
+		System.out.println("nb succ: " + plusCourtChemin.getNoeudDepart().getListeSuccesseur().size());
+		System.out.println("cout en distance: " + plusCourtChemin.getCoutEnDistanceChemin());
+		System.out.println("cout en temps: " + plusCourtChemin.getCoutEnTempsChemin());
+    }
+
+   
     public void run() {
 
 		System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
@@ -208,7 +254,7 @@ public class Pcc extends Algo {
 		// si la saisie est bonne, lancer Dijkstra
 		else {
 			algoDijkstra();
-			afficherPlusCourtChemin();
+			afficherPCC();
 		}
     }
 }
