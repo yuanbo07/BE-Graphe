@@ -16,6 +16,7 @@ public class Pcc extends Algo {
     
     protected int isEnTemps;
     protected long tempsExecution;
+	protected boolean existencePCC = false;
     
     // HashMap qui met en correspondance le numéro de noeud et son label
     private HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
@@ -163,12 +164,12 @@ public class Pcc extends Algo {
 			    		}
 		        	} 
 	    	}
-	    	else {
-		    		System.out.println("Il n'existe pas de chemin entre noueud "+ origine + " et noeud " +destination);
-		    		break;
-	    	}
+	    	else
+	    		// il n'existe pas de plus court chemin entre ces deux noeuds, on sort de cette fonction
+		    	return;
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
 		tempsExecution = System.nanoTime() - debut;
+		existencePCC = true;
     }
     
     
@@ -257,8 +258,15 @@ public class Pcc extends Algo {
 		// si la saisie est bonne, on lance Dijkstra
 		else {
 			algoDijkstra();
-			System.out.println("Le temps d'exécution de algo Dijkstra est "+ tempsExecution + " ns.");
-			afficherPCC();
+			if(existencePCC == true){
+				System.out.println("Le temps d'exécution de algo Dijkstra est "+ tempsExecution + " ns.");
+				afficherPCC();
+			}
+			else {
+	    		System.out.println("Il n'existe pas de chemin entre noueud "+ origine + " et noeud " +destination);
+	    		System.out.println("Algo Dijkstra est arrêté.");
+			}
+			
 		}
     }
 }
