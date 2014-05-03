@@ -2,7 +2,9 @@ package core;
 
 public class Label implements Comparable<Label> {
 	
-	/*
+	/**
+	 * composition d'un Label :
+	 * 
 	 * marquage : un booléen (valant vrai si le sommet est définitivement fixé par l'algorithme)
 	 * sommetCourant: le sommet associé à ce label (sommet ou numéro de sommet)
 	 * sommetPere : le sommet précédent sur le chemin correspondant au plus court chemin courant
@@ -14,8 +16,10 @@ public class Label implements Comparable<Label> {
 	private double coutCourant;
 	private boolean marquage;
 	
-	// un label créé par défault : pas de père, coût infini, pas marqué
-	
+	/**
+	 * constructeurs
+	 * un label par défault : pas de père, coût infini, non marqué
+	 */
 	public Label(int id_sommetCourant){
 		this.id_sommetCourant = id_sommetCourant;
 		this.id_sommetPere = -1;
@@ -30,11 +34,11 @@ public class Label implements Comparable<Label> {
 		this.marquage = marquage;
 	}
 	
-
-
-	// Compares this object with the specified object for order. 
-	// Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. 
 	
+	/**
+	 * Compares this object with the specified object for order. 
+	 * Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	 */
 	public int compareTo(Label lb1) {
 		if(this.getCoutCourant() == lb1.getCoutCourant())
 			return 0;
@@ -44,7 +48,9 @@ public class Label implements Comparable<Label> {
 			return -1;
 	}
 	
-	// getters & setters
+	/**
+	 * getters & setters
+	 */
 	
 	public double getCoutCourant() {
 		return coutCourant;

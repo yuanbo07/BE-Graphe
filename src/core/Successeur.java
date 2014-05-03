@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import base.Descripteur;
 
 public class Successeur {
-	
+
 	private int nb_segment;
-	private ArrayList<Segment> listeSegment = new ArrayList<Segment>();
 	private Noeud noeudDestination;
 	private double longueurArrete;
 	private Descripteur descripteur;
 	private int succ_zone;
+	private ArrayList<Segment> listeSegment = new ArrayList<Segment>();
 	
-	// constructeurs
+	/**
+	 * constructeurs
+	 */
 	
 	public Successeur(int nb_segment, Noeud noeudDestination, int longueurArrete, Descripteur descripteur, int succ_zone){
 		super();
@@ -24,17 +26,20 @@ public class Successeur {
 	}
 
 	public Successeur(){
-		
 	}
 	
-	// le temps renvoyé est en seconde
-	
+	/**
+	 * fonction qui calcule le temps utilisé pour une arrête
+	 * le temps renvoyé est en unité "seconde"
+	 */
 	public double calculTempsArrete(){
 		double t = this.longueurArrete * 3600 / (this.descripteur.vitesseMax()*1000);
 		return t;
 	}
 	
-	// getter & setter
+	/**
+	 * getters & setters
+	 */
 	
 	public int getNb_segment() {
 		return nb_segment;
@@ -87,5 +92,4 @@ public class Successeur {
 	public void setDescripteur(Descripteur descripteur) {
 		this.descripteur = descripteur;
 	}
-	
 }

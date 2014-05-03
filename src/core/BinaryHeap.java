@@ -6,7 +6,6 @@
 // ******************ERRORS********************************
 // Throws RuntimeException for findMin and deleteMin when empty
 
-
 package core ;
 import java.util.* ;
 
@@ -16,16 +15,6 @@ import java.util.* ;
  * @author Mark Allen Weiss
  * @author DLB
  */
-
-
-/* BinaryHeap : 
- * 
- * 1. is a heap in which each node can only have two child-node : binary
- * 2. when adding a node, first add to parent-node's left, then to its right	
- * 3. for a "min-heap", a parent node is always smaller or equal to its child-node(s)
- */
-
-// paramètre d'entrée : element E extends Comparable<E>
 
 public class BinaryHeap<E extends Comparable<E>> {
 
@@ -54,7 +43,6 @@ public class BinaryHeap<E extends Comparable<E>> {
 
     // Sets an element in the array
     private void arraySet(int index, E value) {
-    	//for the first element
 		if (index == this.array.size()) {
 		    this.array.add(value) ;
 	}
@@ -94,10 +82,8 @@ public class BinaryHeap<E extends Comparable<E>> {
      * @param x the item to insert.
      */
     public void insert(E x) {
-    	// if currentSize=0-> index = 0 -> currentSize = 1
 		int index = this.currentSize++ ;
 		this.arraySet(index, x) ;
-		// we put x in hashmap
 		this.hashMap.put(x, index);
 		this.percolateUp(index) ;
     }
@@ -107,10 +93,10 @@ public class BinaryHeap<E extends Comparable<E>> {
      * @param index the index at which the percolate begins.
      */
     private void percolateUp(int index) {
-    	// get element x by its index
+    	// Get element x by its index
 		E x = this.array.get(index) ;
 	
-		//if x (which is on "index" place) is smaller than its parent node ->swap with its parent (percolateUp)
+		// If x (which is on "index" place) is smaller than its parent node, we swap it with its parent (percolateUp)
 	        for( ; index > 0 && x.compareTo(this.array.get(index_parent(index)) ) < 0; index = index_parent(index) ) {
 		    E moving_val = this.array.get(index_parent(index)) ;
 	            this.arraySet(index, moving_val) ;
@@ -133,11 +119,10 @@ public class BinaryHeap<E extends Comparable<E>> {
 		    E current = this.array.get(index) ;
 		    E left = this.array.get(ileft) ;
 		    boolean hasRight = iright < this.currentSize ;
-		    // if right element exists, return its index, if not, return null
+		    // If the right element exists, return its index ; if not, return null
 		    E right = (hasRight)?this.array.get(iright):null ;
 		    
 		    if (!hasRight || left.compareTo(right) < 0) {
-			// Left is smaller
 			if (left.compareTo(current) < 0) {
 			    this.arraySet(index, left) ;
 			    this.hashMap.put(left, index);
@@ -147,7 +132,6 @@ public class BinaryHeap<E extends Comparable<E>> {
 			}
 		    }
 		    else {
-			// Right is smaller
 			if (right.compareTo(current) < 0) {
 			    this.arraySet(index, right) ;
 			    this.hashMap.put(right,index);
@@ -158,7 +142,6 @@ public class BinaryHeap<E extends Comparable<E>> {
 	    }
 	}
     }
-	    
 	    
 	/**
 	 * Verify if input element exists in the heap 
@@ -199,9 +182,9 @@ public class BinaryHeap<E extends Comparable<E>> {
     }
     
     
-    // we update the heap both up and down
+    // This function will be used to update current cost of a node
     public void update(E element){
-    	// we get indice of element by its value
+    	// We get index of element by its value
     	int indice = this.hashMap.get(element);
     	this.percolateUp(indice);
     	this.percolateDown(indice);
@@ -245,7 +228,6 @@ public class BinaryHeap<E extends Comparable<E>> {
 	}
 
 
-    
     // Test program : compare with the reference implementation PriorityQueue.
     // PriorityQueue : a priority heap implemented in Java
     public static void main(String [] args) {
@@ -299,10 +281,4 @@ public class BinaryHeap<E extends Comparable<E>> {
 		    }
 		}
     }
-    
-    // getters
-
-	public int getCurrentSize() {
-		return currentSize;
-	}
 }

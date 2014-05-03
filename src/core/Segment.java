@@ -1,13 +1,13 @@
 package core;
 
-//tester commit fork
-
 public class Segment {
 	
 	private int deltaLatitude;
 	private int deltaLongitude;
 	
-	// getter & setter
+	/**
+	 * getters & setters
+	 */
 	
 	public int getDeltaLatitude() {
 		return deltaLatitude;
@@ -21,7 +21,4 @@ public class Segment {
 	public void setDeltaLongitude(int deltaLongitude) {
 		this.deltaLongitude = deltaLongitude;
 	}
-	
-	
-
 }

@@ -3,11 +3,15 @@ package core;
 import java.util.ArrayList;
 
 public class Noeud {
+	private int id_noeud;
 	private float longitude;
 	private float latitude;
-	private int id_noeud;
 	private int nb_successeur;
 	private ArrayList<Successeur> listeSuccesseur = new ArrayList<Successeur>();
+	
+	/**
+	 * constructeurs
+	 */
 	
 	public Noeud(int id_noeud, float latitude, float longitude, int nb_successeur){
 		this.id_noeud = id_noeud;
@@ -17,15 +21,15 @@ public class Noeud {
 	}
 	
 	public Noeud(){
-		
 	}
 	
 	public void addSuccesseur(Successeur succ){
 		this.listeSuccesseur.add(succ);
 	}
 	
-	
-	// getter & setter
+	/**
+	 * getters & setters
+	 */
 	
 	public float getLongitude() {
 		return longitude;
@@ -65,7 +69,5 @@ public class Noeud {
 
 	public void setNb_successeur(int nb_successeur) {
 		this.nb_successeur = nb_successeur;
-	}
-	
+	}	
 }
-

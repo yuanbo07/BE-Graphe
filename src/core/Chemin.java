@@ -3,7 +3,6 @@ package core;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import base.Dessin;
 
 public class Chemin {
@@ -14,13 +13,15 @@ public class Chemin {
 	private int zoneDepart;
 	private int zoneDestination;
 	private ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
+	
 	private double coutEnTempsChemin = 0;
 	private double distanceCoutEnTempsChemin = 0;
 	private double coutEnDistanceChemin = 0;
 	private double tempsCoutEnDistanceChemin = 0;
 
-	// Constructeur
-	
+    /**
+     * constructeur
+     */
 	public Chemin(int numCarte, int nbNoeud, Noeud noeudDepart, Noeud noeudDestination, int zoneDepart, int zoneDestination){
 		this.numCarte = numCarte;
 		this.nbNoeud = nbNoeud;
@@ -30,16 +31,13 @@ public class Chemin {
 		this.zoneDestination = zoneDestination;
 	}
 	
-	public Chemin(Noeud noeudDepart, Noeud noeudDestination){
-		this.noeudDepart = noeudDepart;
-		this.noeudDestination = noeudDestination;
-	}
-	
 	public Chemin(){
 	}
 	
-	// renvoyer une liste de tous successeurs qui définient plus d'un chemin entre deux noeuds (multi-chemin)
-	
+    /**
+     * renvoyer une liste de successeurs qui plus d'un chemin entre deux noeuds 
+     * c'est le cas "Multi-chemin"
+     */
 	public ArrayList<Successeur> getListeSuccMultiChemin(Noeud noeudCourant, Noeud noeudSuivant){
 		ArrayList<Successeur> listeSuccMultiChemin = new ArrayList<Successeur>();
 		for (Successeur succ : noeudCourant.getListeSuccesseur()){
@@ -49,23 +47,24 @@ public class Chemin {
 		return listeSuccMultiChemin;
 	}
 	
-	
-	// On cherche l'arrête la plus courte en distance, puis renvoyer ce successeur
-	
+    /**
+     * on cherche l'arrête la plus courte en distance, puis on renvoie ce successeur
+     */
 	public Successeur getSuccPlusCourtArrete(Noeud noeudCourant, Noeud noeudSuivant){
-		// coût de plus courte arrête entre deux noeuds successifs
+		// coût de la plus courte arrête entre deux noeuds successifs
 		double coutDistanceArrete = 0;
-		// liste qui stocke les successeurs à comparer
+		// liste qui stocke les successeurs à comparer entre eux
 		ArrayList<Successeur> listeSuccAComparer = new ArrayList<Successeur>();
 		// iterator
-		int i;
-		// successeur à renvoyer, qui a la plus courte arrête
+		int i = 0;
+		// le successeur qui a la plus courte arrête, à renvoyer par cette fonction
 		Successeur s = new Successeur();
-		
+		// on crée une liste "Multi-chemin"
 		listeSuccAComparer = getListeSuccMultiChemin(noeudCourant, noeudSuivant);
-		// on initialise cout d'arrete le cout de premiere arrete qu'on a (reste à retoucher)
+		// on initialise le coût d'arrête avec le coût de première arrête qu'on a obtenu
 		coutDistanceArrete = listeSuccAComparer.get(0).getLongueurArrete();
-		for (i=0;i<listeSuccAComparer.size();i++){
+		// on cherche le plus courte arrête
+		for (;i<listeSuccAComparer.size();i++){
 			double arreteCourant = listeSuccAComparer.get(i).getLongueurArrete();
 			if (arreteCourant < coutDistanceArrete)
 				coutDistanceArrete = arreteCourant;
@@ -74,22 +73,17 @@ public class Chemin {
 		return s;
 	}
 
-	// On cherche l'arrête plus courte en temps, puis renvoyer ce successeur
-	
+    /**
+     * on cherche l'arrête la plus courte en temps, puis on renvoie ce successeur
+     */
 	public Successeur getSuccPlusCourtTemps(Noeud noeudCourant, Noeud noeudSuivant){
-		// coût de plus courte arrête entre deux noeuds successifs
 		double coutTempsArrete = 0;
-		// liste qui stocke les successeurs à comparer
 		ArrayList<Successeur> listeSuccAComparer = new ArrayList<Successeur>();
-		// iterator
-		int i;
-		// successeur à renvoyer, qui a le plus court temps
+		int i = 0;
 		Successeur s = new Successeur();
 		listeSuccAComparer = getListeSuccMultiChemin(noeudCourant, noeudSuivant);
-		
-		// on initialise le cout en temps de premiere arrete qu'on a (reste à retoucher)
 		coutTempsArrete = listeSuccAComparer.get(0).calculTempsArrete();
-		for (i=0;i<listeSuccAComparer.size();i++){
+		for (;i<listeSuccAComparer.size();i++){
 			double coutTempsCourant = listeSuccAComparer.get(i).calculTempsArrete();
 			if (coutTempsCourant < coutTempsArrete)
 				coutTempsArrete = coutTempsCourant;
@@ -98,8 +92,10 @@ public class Chemin {
 		return s;
 	}
 	
-	// pour obtenir un chemin plus court en distance entre noeudDepart et noeudDestination
-	
+    /**
+     * fonction qui cherche un chemin le plus court en distance entre noeudDepart et noeudDestination
+     * et aussi le temps utilisé dans ce cas
+     */
 	public void calculCheminPlusCourtDistance(){
 		// les deux noeuds qui vont parcourir tout le chemin
 		Noeud noeudCourant;
@@ -110,10 +106,10 @@ public class Chemin {
 		double tempsCoutEnDistanceChemin = 0;
 		int i = 0;
 
-		// on prend toujours le plus courte arrête entre deux noeuds successifs
-		for (i=0;i<listeNoeudChemin.size()-1;i++){
+		for (;i<listeNoeudChemin.size()-1;i++){
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
+			// on prend toujours la plus courte arrête entre deux noeuds successifs
 			coutDistanceArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).getLongueurArrete();
 			coutTempsArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).calculTempsArrete();
 			coutEnDistanceChemin += coutDistanceArrete;
@@ -123,9 +119,10 @@ public class Chemin {
 		this.tempsCoutEnDistanceChemin = tempsCoutEnDistanceChemin;
 	}
 	
-	
-	// pour obtenir un chemin plus court en temps entre noeudDepart et noeudDestination
-	
+    /**
+     * une fonction qui cherche un chemin le plus court en temps entre noeudDepart et noeudDestination
+     * et aussi la distance utilisé dans ce cas
+     */
 	public void calculCheminPlusCourtTemps(){
 		// les deux noeuds qui vont parcourir tout le chemin
 		Noeud noeudCourant;
@@ -136,10 +133,10 @@ public class Chemin {
 		double distanceCoutEnTempsChemin = 0;
 		int i = 0;
 
-		// on prend toujours le plus court temps entre deux noeuds successifs
 		for (i=0;i<listeNoeudChemin.size()-1;i++){
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
+			// on prend toujours le plus court temps entre deux noeuds successifs
 			coutTempsArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).calculTempsArrete();
 			coutDistanceArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).getLongueurArrete();
 			coutEnTempsChemin += coutTempsArrete;
@@ -149,8 +146,10 @@ public class Chemin {
 		this.distanceCoutEnTempsChemin = distanceCoutEnTempsChemin;
 	}
 
-	// mettre en forme la distance en km et renvoyer le String
-	
+    /**
+	 * fonction qui met en forme la distance en unité "kilomètre", puis renvoie le String
+	 * paramètre en entrée est en "mètre"
+     */
 	public String distanceEnkmToString(double distance) {
 
 		String s = null;
@@ -166,9 +165,10 @@ public class Chemin {
 		return s;
 	}
 	
-	
-	// mettre en forme le temps en min et renvoyer le String
-	
+    /**
+	 * fonction qui met en forme le temps en unité "minute", puis renvoie le String
+	 * paramètre en entrée est en "second"
+     */
 	public String tempsEnMinToString(double temps) {
 
 		int h;
@@ -195,21 +195,25 @@ public class Chemin {
 		return stringTemps;
 	}
 	
-	// ajouter un noeud dans ce chemin
-	
+    /**
+	 * ajouter un noeud dans le chemin
+     */
 	public void addNoeud(Noeud n){
 		this.listeNoeudChemin.add(n);
 		nbNoeud ++;
 	}
 	
-	// pour renverser un chemin
-	
+    /**
+	 * renverser l'ordre des noeuds dans le chemin
+     */
 	public void renverserChemin(){
 		Collections.reverse(listeNoeudChemin);
 	}
 	
-	// dessiner le chemin sur la carte graphique
-	
+    /**
+	 * dessiner le chemin dans la carte graphique
+	 * drawLine(long1, lat1, long2, lat2)
+     */
 	public void dessinerChemin(Dessin d){
 		d.setColor(Color.cyan);
 		d.setWidth(5);
@@ -218,20 +222,13 @@ public class Chemin {
 			float latitudeCourant = this.listeNoeudChemin.get(i).getLatitude();
 			float longitudeSuivant = this.listeNoeudChemin.get(i+1).getLongitude();
 			float latitudeSuivant = this.listeNoeudChemin.get(i+1).getLatitude();
-		    /**
-		     *  drawLine(lon, lat1, long2, lat2)
-		     *  Trace un point.
-		     *  @param lon longitude du point
-		     *  @param lat latitude du point
-		     *  @param width grosseur du point
-		     */
 			d.drawLine(longitudeCourant, latitudeCourant, longitudeSuivant, latitudeSuivant);
 		}
 	}
-	
 
-	// cette fonction gère affichage
-	
+    /**
+     * ces deux fonctions sont utilisées pour afficher le coût en distance ou temps
+     */
 	public void affichageCoutEnTemps(){
 	    System.out.println("Coût en distance :");
 	    System.out.println("Distance du chemin : " + this.getCoutEnDistanceChemin());
@@ -244,8 +241,9 @@ public class Chemin {
 	    System.out.println("La distance du chemin dans ce cas : " + this.getDistanceCoutEnTempsChemin());
 	}
 	
-	
-	
+    /**
+     * fonction qui affiche des information sur un chemin
+     */
 	public void affichageInformationChemin(){
 		
 		// exécuter
@@ -262,8 +260,34 @@ public class Chemin {
 	    System.out.println();
 	}
 	
-	// getters & setters
+	
+    /**
+     * les quatre fonctions "getters" qui retournent résultats en bonne unité (String)
+     */
 
+	public String getCoutEnTempsChemin() {
+		calculCheminPlusCourtTemps();
+		return tempsEnMinToString(coutEnTempsChemin);
+	}
+
+	public String getDistanceCoutEnTempsChemin() {
+		calculCheminPlusCourtTemps();
+		return distanceEnkmToString(distanceCoutEnTempsChemin);
+	}
+
+	public String getCoutEnDistanceChemin() {
+		calculCheminPlusCourtDistance();
+		return distanceEnkmToString(coutEnDistanceChemin);
+	}
+
+	public String getTempsCoutEnDistanceChemin() {
+		calculCheminPlusCourtDistance();
+		return tempsEnMinToString(tempsCoutEnDistanceChemin);
+	}
+	
+    /**
+     * getters & setters
+     */
 	public int getNumCarte() {
 		return numCarte;
 	}
@@ -320,30 +344,6 @@ public class Chemin {
 		this.listeNoeudChemin = listeNoeudChemin;
 	}
 	
-	// les quatre fonctions "getters" qui retournent résultats en bonne unité (String)
-
-	public String getCoutEnTempsChemin() {
-		calculCheminPlusCourtTemps();
-		return tempsEnMinToString(coutEnTempsChemin);
-	}
-
-	public String getDistanceCoutEnTempsChemin() {
-		calculCheminPlusCourtTemps();
-		return distanceEnkmToString(distanceCoutEnTempsChemin);
-	}
-
-	public String getCoutEnDistanceChemin() {
-		calculCheminPlusCourtDistance();
-		return distanceEnkmToString(coutEnDistanceChemin);
-	}
-
-	public String getTempsCoutEnDistanceChemin() {
-		calculCheminPlusCourtDistance();
-		return tempsEnMinToString(tempsCoutEnDistanceChemin);
-	}
-	
-	// setters
-
 	public void setCoutEnTempsChemin(double coutEnTempsChemin) {
 		this.coutEnTempsChemin = coutEnTempsChemin;
 	}

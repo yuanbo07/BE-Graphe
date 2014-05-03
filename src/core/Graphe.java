@@ -34,16 +34,17 @@ public class Graphe {
     // Liste des noeuds dans un graphe
     private ArrayList<Noeud> listeNoeuds = new ArrayList<Noeud>(); 
     
-    // Liste des descripteurs
+    // Liste des descripteurs dans un graphe
     private ArrayList<Descripteur> listeDescripteurs = new ArrayList<Descripteur>(); 
     
-    // Chemin
+    // Chemin dans un graphe
     private Chemin chemin;
     
     /*
 	* Ces attributs constituent une structure ad-hoc pour stocker les informations du graphe.
 	* Vous devez modifier et ameliorer ce choix de conception simpliste.
 	*/
+    
     private float longitude ;
     private float latitude ;
     private int nb_successeur;
@@ -91,7 +92,7 @@ public class Graphe {
 			this.listeNoeuds.add(new Noeud(num_node, latitude, longitude, nb_successeur));
 		}
 		
-		// octet à 255 : fin lecture des noeuds
+		// fin de lecture des noeuds, on lit un octet à 255
 		Utils.checkByte(255, dis) ;
 		
 		// Lecture des descripteurs
@@ -100,7 +101,7 @@ public class Graphe {
 			listeDescripteurs.add(new Descripteur(dis));
 		}
 	    
-		// octet à 254 : fin lecture des descripteurs
+		// fin de lecture des descripteurs, on lit un octet à 254
 	    Utils.checkByte(254, dis) ;
 	    
 	    // Lecture des successeurs (routes sortantes)
@@ -124,17 +125,17 @@ public class Graphe {
 			    int nb_segm   = dis.readUnsignedShort() ;
 			    
 			    // Ajouter successeur à ce num_node
-			    
 			    Noeud noueudCourant = listeNoeuds.get(num_node);
 			    Noeud noeudDestination = listeNoeuds.get(dest_node);
 			    Descripteur descripteur = listeDescripteurs.get(descr_num);
 			    
-			    // On ajoute le successeur de num_noeud (noeud courant)
-			    // Si c'est sens double, on ajoute de plus un successeur pour le noeud de destination
+			    /*
+			     * on ajoute le successeur de noeud courant
+			     * si c'est du sens double, on ajoute de plus un successeur pour le noeud de destination
+			     */
 			    
 			    Successeur succ = new Successeur(nb_segm, noeudDestination, longueur, descripteur, succ_zone);
 			    listeNoeuds.get(num_node).addSuccesseur(succ);
-			    
 			    if (!listeDescripteurs.get(descr_num).isSensUnique()){
 			    	Successeur succDoubleSens = new Successeur(nb_segm, noueudCourant, longueur, descripteur, succ_zone);
 			    	listeNoeuds.get(dest_node).addSuccesseur(succDoubleSens);
@@ -162,9 +163,9 @@ public class Graphe {
 				dessin.drawLine(current_long, current_lat, listeNoeuds.get(dest_node).getLongitude(), listeNoeuds.get(dest_node).getLatitude()) ;
 		    }
 			}
-	}
+	    }
 	    
-	    // fin de successeur, on lit un octet à 253
+	    // fin de lecture successeurs, on lit un octet à 253
 	    Utils.checkByte(253, dis) ;
 
 	    System.out.println("Fichier lu : " + nb_nodes + " sommets, " + edges + " aretes, " 
@@ -211,9 +212,9 @@ public class Graphe {
 	    
 	    System.out.println("Clic aux coordonnees lon = " + lon + "  lat = " + lat) ;
 
-	    // On cherche le noeud le plus proche. O(n)
+	    // on cherche le noeud le plus proche. O(n)
 	    float minDist = Float.MAX_VALUE ;
-	    int   noeud   = 0 ;
+	    int noeud   = 0 ;
 	    
 	    for (int num_node = 0 ; num_node < listeNoeuds.size() ; num_node++) {
 		float londiff = (listeNoeuds.get(num_node).getLongitude() - lon) ;
@@ -269,17 +270,16 @@ public class Graphe {
 	    int current_zone = 0 ;
 	    int current_node = 0 ;
 	    
-	    // Création d'un chemin
+	    // création d'un chemin
 	    Noeud noeudDepart = listeNoeuds.get(first_node);
 	    Noeud noeudDestination = listeNoeuds.get(last_node);
 	    chemin = new Chemin(path_carte, nb_noeuds, noeudDepart, noeudDestination, first_zone, last_zone);
 
-	    // Tous les noeuds du chemin
 	    for (int i = 0 ; i < nb_noeuds ; i++) {
 			current_zone = dis.readUnsignedByte() ;
 			current_node = Utils.read24bits(dis) ;
 			
-		// Ajouter les noeuds dans le chemin
+		// ajouter les noeuds dans le chemin
 			chemin.addNoeud(listeNoeuds.get(current_node));
 
 		System.out.println(" --> " + current_zone + ":" + current_node) ;
@@ -296,13 +296,13 @@ public class Graphe {
 	   chemin.dessinerChemin(dessin);
 
 	    
-	} catch (IOException e) {
+		} catch (IOException e) {
 	    e.printStackTrace() ;
 	    System.exit(1) ;
-	}
+		}
     }
     
-    // getters & setters
+    // getters
     
 	public String getNomCarte() {
 		return nomCarte;
@@ -311,6 +311,4 @@ public class Graphe {
 	public ArrayList<Noeud> getListeNoeuds() {
 		return listeNoeuds;
 	}
-
-
 }
