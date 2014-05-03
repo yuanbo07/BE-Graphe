@@ -2,6 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import base.Dessin;
 
@@ -27,6 +28,11 @@ public class Chemin {
 		this.noeudDestination = noeudDestination;
 		this.zoneDepart = zoneDepart;
 		this.zoneDestination = zoneDestination;
+	}
+	
+	public Chemin(Noeud noeudDepart, Noeud noeudDestination){
+		this.noeudDepart = noeudDepart;
+		this.noeudDestination = noeudDestination;
 	}
 	
 	// renvoyer une liste de tous successeurs qui définient plus d'un chemin entre deux noeuds (multi-chemin)
@@ -192,7 +198,11 @@ public class Chemin {
 		this.listeNoeudChemin.add(n);
 	}
 	
+	// pour renverser un chemin
 	
+	public void renverserChemin(){
+		Collections.reverse(this.listeNoeudChemin);
+	}
 	
 	
 	// dessiner le chemin sur la carte graphique

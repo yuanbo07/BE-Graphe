@@ -16,6 +16,10 @@ public class Noeud {
 		this.nb_successeur = nb_successeur;
 	}
 	
+	public Noeud(){
+		
+	}
+	
 	public void addSuccesseur(Successeur succ){
 		this.listeSuccesseur.add(succ);
 	}

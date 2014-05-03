@@ -3,6 +3,7 @@ package core ;
 import java.awt.Color;
 import java.io.* ;
 import java.util.HashMap;
+
 import base.Readarg ;
 
 public class Pcc extends Algo {
@@ -23,6 +24,14 @@ public class Pcc extends Algo {
 	// nombre de sommets dans le graphe
 	private int numNoeudGraphe = this.graphe.getListeNoeuds().size();
 	
+	// nombre maximal des elements présents dans le tas
+	private int nbMaxTas;
+	
+	// le plus court chemin obtenu par algorithme de Dijkstra
+	private Chemin plusCourtChemin;
+	
+	// le nombre de sommets marqués
+	private int nbMarque;
 	
 	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg) {
 		super(gr, sortie, readarg) ;
@@ -96,6 +105,8 @@ public class Pcc extends Algo {
 	        	Label labelCourant = tasLabel.deleteMin();
 	        	// on le marque
 	        	labelCourant.setMarquage(true);
+	        	nbMaxTas--;
+	        	nbMarque++;
 	        	
 	        	Noeud noeudCourant = this.graphe.getListeNoeuds().get(labelCourant.getId_sommetCourant());
 		        	// pour tous ses successeurs (tous les arcs sortants)
@@ -128,26 +139,65 @@ public class Pcc extends Algo {
 			    			else{
 			    				// on le met dans le tas
 			    				tasLabel.insert(labelNoeudSuccCourant);
+			    				nbMaxTas++;
+			    				updateNbElementMaxTas();
 			    				// on dessine un segment entre noeudCourant et son succCourant
-								this.graphe.getDessin().setColor(Color.cyan);
+								this.graphe.getDessin().setColor(Color.GREEN);
 								this.graphe.getDessin().setWidth(5);
 								this.graphe.getDessin().drawLine(noeudCourant.getLongitude(), noeudCourant.getLatitude(), noeudSuccCourant.getLongitude(), noeudSuccCourant.getLatitude());
 			    			}
 			    		}
 		        	} 
 	    	}
-	    	else{
+	    	else {
 		    		System.out.println("Il n'existe pas de chemin entre noueud "+ origine + " et noeud " +destination);
 		    		break;
 	    	}
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
+		
+		System.out.println("Le nombre maximal dans le tas est : " + nbMaxTas);
+		System.out.println();
     }
+    
+    // fonction qui met à jour le nb maximal des elements dans le tas
+    
+    public void updateNbElementMaxTas(){
+    	if(tasLabel.size() > nbMaxTas)
+    		nbMaxTas = tasLabel.size();
+    }
+    
+    // afficher le plus court chemin
+    
+    public void afficherPlusCourtChemin(){
+    	
+    	Noeud noeudDepart = this.graphe.getListeNoeuds().get(origine);
+    	Noeud noeudDestination = this.graphe.getListeNoeuds().get(destination);
+    	Chemin plusCourtChemin = new Chemin(noeudDepart, noeudDestination);
+    	// on met d'abords le noeud de distination dans le chemin
+    	plusCourtChemin.addNoeud(noeudDestination);	
+    	Label labelCourant = mapCorrespondanceNoeudLabel.get(destination);
+    	
+    	// on cherche parmi tous les noeuds marqués
+    	for(int i=0;i < nbMarque;i++){
+    		// si ce n'est pas le noeud de départ
+    		while(labelCourant.getId_sommetPere() != -1){
+    			// on cherche son père et l'ajoute dans le chemin
+    			Noeud noeudCourant = this.graphe.getListeNoeuds().get(labelCourant.getId_sommetPere());
+    			plusCourtChemin.addNoeud(noeudCourant);
+    			labelCourant = mapCorrespondanceNoeudLabel.get(labelCourant.getId_sommetPere());
+    		}
+    		// on renverse le chemin afin qu'il soit origine->destination
+    		plusCourtChemin.renverserChemin();
+    	}
+		plusCourtChemin.dessinerChemin(this.graphe.getDessin());
+    }
+    
 
     public void run() {
 
 		System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
 		
-		// si la saisie est erronnée, inutile de lancer Dijkstra
+		// si la saisie est erronée, inutile de lancer Dijkstra
 
 		if (!verifierSaisirNoeudDepart())
 			System.out.println("Le sommet d'origine " + origine + " n'existe pas dans cette carte.");
@@ -158,6 +208,7 @@ public class Pcc extends Algo {
 		// si la saisie est bonne, lancer Dijkstra
 		else {
 			algoDijkstra();
+			afficherPlusCourtChemin();
 		}
     }
 }
