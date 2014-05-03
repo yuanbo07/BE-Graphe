@@ -14,6 +14,8 @@ public class Pcc extends Algo {
     protected int zoneDestination ;
     protected int destination ;
     
+    protected int isEnTemps;
+    
     // HashMap qui met en correspondance le numéro de noeud et son label
     private HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
     
@@ -47,6 +49,10 @@ public class Pcc extends Algo {
 		// demander la zone et le sommet destination.
 		this.zoneDestination = gr.getZone () ;
 		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
+		
+		//
+		this.isEnTemps = readarg.lireInt ("En distance(0) ou en temps(1) ?");
+		
     }
 	
 	
@@ -121,8 +127,12 @@ public class Pcc extends Algo {
 		        		// si ce noeud successeur n'est pas encore marqué par l'algo
 			    		if(!labelNoeudSuccCourant.isMarque()){
 			    			double cout = 0;
-			    			// on met à jour son coût courant (de sommet d'origine jusqu'ici)
-			    			cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
+			    			// on met à jour son coût courant de sommet d'origine jusqu'ici (en distance ou en temps)
+			    			if(isEnTemps == 0)
+			    				cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
+			    			if(isEnTemps == 1)
+			    				cout = labelCourant.getCoutCourant() + succ.getTempsArrete();
+			    			
 			    			// si cette fois, le coût total obtenu est inférieur à son coût total avant
 			    			if (cout < labelNoeudSuccCourant.getCoutCourant()) {
 			    				// on remplace l'ancien coût avec ce nouveau coût total 
@@ -218,12 +228,11 @@ public class Pcc extends Algo {
 		System.out.println("Le nombre des sommets marqués : " + nbMarque);
 		
     	// affichage distance de PCC
-		System.out.println("La distance de PCC : " + plusCourtChemin.obetnircoutEnDistanceChemin());
-		
+		if(isEnTemps == 0)
+			System.out.println("La distance de PCC : " + plusCourtChemin.obetnircoutEnDistanceChemin());
     	// affichage temps de PCC
-		System.out.println("Le temps de PCC : " + plusCourtChemin.obetnircoutEnTempsChemin());
-		
-		plusCourtChemin.affichageInformationChemin();
+		if(isEnTemps == 1)
+			System.out.println("Le temps de PCC : " + plusCourtChemin.obetnircoutEnTempsChemin());
 		
 		// dessiner le chemin sur la carte
 		plusCourtChemin.dessinerChemin(this.graphe.getDessin());

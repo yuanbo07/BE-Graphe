@@ -15,9 +15,7 @@ public class Chemin {
 	private int zoneDestination;
 	private ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
 	private double coutEnTempsChemin = 0;
-	private double distanceCoutEnTempsChemin = 0;
 	private double coutEnDistanceChemin = 0;
-	private double tempsCoutEnDistanceChemin = 0;
 
 	// Constructeur
 	
@@ -105,9 +103,7 @@ public class Chemin {
 		Noeud noeudCourant;
 		Noeud noeudSuivant;
 		double coutDistanceArrete = 0;
-		double coutTempsArrete = 0;
 		double coutEnDistanceChemin = 0;
-		double tempsCoutEnDistanceChemin = 0;
 		int i = 0;
 
 		// on prend toujours le plus courte arrête entre deux noeuds successifs
@@ -115,12 +111,9 @@ public class Chemin {
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
 			coutDistanceArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).getLongueurArrete();
-			coutTempsArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).calculTempsArrete();
 			coutEnDistanceChemin += coutDistanceArrete;
-			tempsCoutEnDistanceChemin += coutTempsArrete;
 		}
 		this.coutEnDistanceChemin = coutEnDistanceChemin;
-		this.tempsCoutEnDistanceChemin = tempsCoutEnDistanceChemin;
 	}
 	
 	
@@ -130,10 +123,8 @@ public class Chemin {
 		// les deux noeuds qui vont parcourir tout le chemin
 		Noeud noeudCourant;
 		Noeud noeudSuivant;
-		double coutDistanceArrete = 0;
 		double coutTempsArrete = 0;
 		double coutEnTempsChemin = 0;
-		double distanceCoutEnTempsChemin = 0;
 		int i = 0;
 
 		// on prend toujours le plus court temps entre deux noeuds successifs
@@ -141,12 +132,9 @@ public class Chemin {
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
 			coutTempsArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).calculTempsArrete();
-			coutDistanceArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).getLongueurArrete();
 			coutEnTempsChemin += coutTempsArrete;
-			distanceCoutEnTempsChemin += coutDistanceArrete;
 		}
 		this.coutEnTempsChemin = coutEnTempsChemin;
-		this.distanceCoutEnTempsChemin = distanceCoutEnTempsChemin;
 	}
 
 	// mettre en forme la distance en km et renvoyer le String
@@ -238,7 +226,7 @@ public class Chemin {
 	
 	public String obetnircoutEnTempsChemin(){
 		calculCheminPlusCourtTemps();
-		return tempsEnMinToString(tempsCoutEnDistanceChemin);
+		return tempsEnMinToString(coutEnTempsChemin);
 	}
 	
 	
@@ -256,11 +244,9 @@ public class Chemin {
 	    System.out.println("Ce chemin contient " + getListeSuccMultiChemin(noeudDepart, noeudDestination).size() + " multi-chemin.");
 	    System.out.println("Cas 1 : Le coût d'un chemin en distance :");
 	    System.out.println("Distance du chemin : " + obetnircoutEnDistanceChemin());
-	    System.out.println("Le temps dans ce cas : " + tempsEnMinToString(tempsCoutEnDistanceChemin));
 	    System.out.println();
 	    System.out.println("Cas 2 : Le coût d'un chemin en temps:");
 	    System.out.println("Temps du chemin : " + obetnircoutEnTempsChemin());
-	    System.out.println("La distance dans ce cas : " + distanceEnkmToString(distanceCoutEnTempsChemin));
 	    System.out.println();
 	}
 	
@@ -330,14 +316,6 @@ public class Chemin {
 		this.coutEnTempsChemin = coutEnTempsChemin;
 	}
 
-	public double getDistanceCoutEnTempsChemin() {
-		return distanceCoutEnTempsChemin;
-	}
-
-	public void setDistanceCoutEnTempsChemin(int distanceCoutEnTempsChemin) {
-		this.distanceCoutEnTempsChemin = distanceCoutEnTempsChemin;
-	}
-
 	public double getCoutEnDistanceChemin() {
 		return coutEnDistanceChemin;
 	}
@@ -346,11 +324,4 @@ public class Chemin {
 		this.coutEnDistanceChemin = coutEnDistanceChemin;
 	}
 
-	public double getTempsCoutEnDistanceChemin() {
-		return tempsCoutEnDistanceChemin;
-	}
-
-	public void setTempsCoutEnDistanceChemin(double tempsCoutEnDistanceChemin) {
-		this.tempsCoutEnDistanceChemin = tempsCoutEnDistanceChemin;
-	}
 }

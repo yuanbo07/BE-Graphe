@@ -64,6 +64,10 @@ public class Successeur {
 		return longueurArrete;
 	}
 	
+	public double getTempsArrete() {
+		return this.calculTempsArrete();
+	}
+	
 	public void setLongueurArrete(int longueurArrete) {
 		this.longueurArrete = longueurArrete;
 	}
