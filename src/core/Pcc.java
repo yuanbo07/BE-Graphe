@@ -15,6 +15,7 @@ public class Pcc extends Algo {
     protected int destination ;
     
     protected int isEnTemps;
+    protected long tempsExecution;
     
     // HashMap qui met en correspondance le numéro de noeud et son label
     private HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
@@ -101,6 +102,7 @@ public class Pcc extends Algo {
     // algorithme de Dijkstra avec le tas, complexité : o(nlogn) 
     public void algoDijkstra(){
     	
+    	long debut = System.nanoTime();
     	// initialiser
     	this.initialisationAlgoDijkstra();
   
@@ -166,6 +168,7 @@ public class Pcc extends Algo {
 		    		break;
 	    	}
     	} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
+		tempsExecution = System.nanoTime() - debut;
     }
     
     
@@ -210,12 +213,12 @@ public class Pcc extends Algo {
     	construirePlusCourtChemin();
     	
     	// affichage le nombre noeuds dans le plus court chemin
-		System.out.println("size :" + plusCourtChemin.getListeNoeudChemin().size());
+		System.out.println("Le nombre de noeud dans le plus court chemin est: " + plusCourtChemin.getListeNoeudChemin().size());
 		
     	// affichage tous les noeuds dans le plus court chemin
 		for (int i=0;i < plusCourtChemin.getNbNoeud();i++)
 		{
-			System.out.println("Le sommet " + i + " de PCC est : " + plusCourtChemin.getListeNoeudChemin().get(i).getId_noeud());
+			System.out.println("Le sommet " + (i+1) + " est: " + plusCourtChemin.getListeNoeudChemin().get(i).getId_noeud());
 		}
 		
     	// affichage nombre noeuds parcourus
@@ -229,10 +232,10 @@ public class Pcc extends Algo {
 		
     	// affichage distance de PCC
 		if(isEnTemps == 0)
-			System.out.println("La distance de PCC : " + plusCourtChemin.obetnircoutEnDistanceChemin());
+			plusCourtChemin.affichageCoutEnDistance();
     	// affichage temps de PCC
 		if(isEnTemps == 1)
-			System.out.println("Le temps de PCC : " + plusCourtChemin.obetnircoutEnTempsChemin());
+			plusCourtChemin.affichageCoutEnTemps();
 		
 		// dessiner le chemin sur la carte
 		plusCourtChemin.dessinerChemin(this.graphe.getDessin());
@@ -254,6 +257,7 @@ public class Pcc extends Algo {
 		// si la saisie est bonne, on lance Dijkstra
 		else {
 			algoDijkstra();
+			System.out.println("Le temps d'exécution de algo Dijkstra est "+ tempsExecution + " ns.");
 			afficherPCC();
 		}
     }
