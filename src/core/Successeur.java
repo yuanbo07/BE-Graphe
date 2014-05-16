@@ -1,6 +1,5 @@
 package core;
 
-import java.util.ArrayList;
 import base.Descripteur;
 
 public class Successeur {
@@ -10,7 +9,6 @@ public class Successeur {
 	private double longueurArrete;
 	private Descripteur descripteur;
 	private int succ_zone;
-	private ArrayList<Segment> listeSegment = new ArrayList<Segment>();
 	
 	/**
 	 * constructeurs
@@ -47,14 +45,6 @@ public class Successeur {
 	
 	public void setNb_segment(int nb_segment) {
 		this.nb_segment = nb_segment;
-	}
-	
-	public ArrayList<Segment> getListeSegment() {
-		return listeSegment;
-	}
-	
-	public void setListeSegment(ArrayList<Segment> listeSegment) {
-		this.listeSegment = listeSegment;
 	}
 	
 	public Noeud getNoeudDestination() {

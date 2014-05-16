@@ -45,6 +45,8 @@ public class Pcc extends Algo {
 	// le nombre de sommets parcourus (id. placé dans le tas)
 	private int nbParcouru;
 	
+    // booléan qui permet utilisateurs à choisir entre l'algo Dijkstra(0) ou A*(1)
+    protected int choixAlgo;
 	
 	/**
 	 * fonction qui lit tous les paramètres d'entrée
@@ -60,8 +62,11 @@ public class Pcc extends Algo {
 		this.zoneDestination = gr.getZone () ;
 		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
 		
-		// demander l'algo Dijkstra s'applique en distance ou en temps
-		this.isEnTemps = readarg.lireInt ("En distance(0) ou en temps(1) ?");
+		// demander l'utilisateur à choisir entre Dijsktra et A Star
+		this.choixAlgo = readarg.lireInt ("Dijkstra(0) ou A Star(1) ?");
+		
+		// demander l'utilisateur à choisir entre temps et distance
+		this.isEnTemps = readarg.lireInt ("Distance(0) ou Temps(1) ?");
     }
 
 	/**
@@ -109,10 +114,11 @@ public class Pcc extends Algo {
 	}
     	
     /**
-     * algorithme de Dijkstra avec le tas
-	/* la complexité : o(nlogn) 
+     * algorithme de Dijkstra et A star avec le tas
+     * à utilisateur à chosir l'algorithme à lancer
+	/* la complexité pour ces dexu algorithmes : o(nlogn) 
      */
-    public void algoDijkstra(){
+    public void algoPCC(){
     	
     	// commencer le calcul temps d'exécution d'algo
     	long debut = System.nanoTime();
@@ -141,11 +147,30 @@ public class Pcc extends Algo {
 		        		// si ce noeud successeur n'est pas encore marqué par algo
 			    		if(!labelNoeudSuccCourant.isMarque()){
 			    			double cout = 0;
-			    			// on met à jour son coût courant (en distance ou en temps)
-			    			if(isEnTemps == 0)
-			    				cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
-			    			if(isEnTemps == 1)
-			    				cout = labelCourant.getCoutCourant() + succ.getTempsArrete();
+
+			    			// si l'utilisateur a choisi l'algo de Dijkstra, on met estimation 0
+			    			if(choixAlgo == 0){
+			    				// si l'utilisateur a choisi pcc Dijkstra en distance
+				    			if(isEnTemps == 0) 
+				    				cout = labelCourant.getCoutCourant() + succ.getLongueurArrete();
+				    			// si l'utilisateur a choisi pcc Dijkstra en temps
+				    			if(isEnTemps == 1)
+				    				cout = labelCourant.getCoutCourant() + succ.getTempsArrete();
+				    		}
+			    			
+			    			// si l'utilisateur a choisi l'algo de A Star, on règle l'estimation
+			    			if(choixAlgo == 1){
+			    				// on récupère le noeud destination
+			    				Noeud noeudDestination = this.graphe.getListeNoeuds().get(destination);
+			    				// si l'utilisateur a choisi PCC A Star en distance
+				    			if(isEnTemps == 0) {
+				    				cout = labelCourant.getCoutCourant() + succ.getLongueurArrete() + calculerEstimationDistance(noeudSuccCourant,noeudDestination);
+				    			}
+				    			// si l'utilisateur a choisi PCC A Star en temps
+				    			if(isEnTemps == 1){
+				    				cout = labelCourant.getCoutCourant() + succ.getTempsArrete() + calculerEstimationTemps(noeudSuccCourant,noeudDestination);
+				    			}
+			    			}
 			    			
 			    			// si cette fois, le coût total obtenu est inférieur à son coût total d'avant
 			    			if (cout < labelNoeudSuccCourant.getCoutCourant()) {
@@ -166,6 +191,7 @@ public class Pcc extends Algo {
 			    				tasLabel.insert(labelNoeudSuccCourant);
 			    				nbParcouru++;
 			    				nbMaxTas++;
+			    				// pour mettre à jour le tas
 			    				updateNbElementMaxTas();
 			    				// on dessine un segment entre noeudCourant et son succCourant
 								this.graphe.getDessin().setColor(Color.BLUE);
@@ -221,6 +247,23 @@ public class Pcc extends Algo {
     	plusCourtChemin.setNbNoeud(plusCourtChemin.getListeNoeudChemin().size());
     }
     
+	// calculer l'estimation entre noeud courant et noeud destination
+	public float calculerEstimationDistance(Noeud noeudSuccCourant, Noeud noeudDestination){
+		float latitude_noeudSuccCourant = noeudSuccCourant.getLatitude();
+		float longitude_noeudSuccCourant = noeudSuccCourant.getLongitude();
+		float latitude_noeudDestination = noeudDestination.getLatitude();
+		float longitude_noeudDestination = noeudDestination.getLongitude();
+		return (float)Graphe.distance(longitude_noeudSuccCourant, latitude_noeudSuccCourant, 
+				longitude_noeudDestination, latitude_noeudDestination);
+	}
+	
+	// calculer l'estimation en temps 
+	public float calculerEstimationTemps(Noeud noeudSuccCourant, Noeud noeudDestination){
+		float coutEstimationDistance = calculerEstimationDistance(noeudSuccCourant,noeudDestination);
+		// on prend ici la vitesse maximale 130 km/h, retourner le temps en seconde
+		return 3600*(coutEstimationDistance / 130);
+	}
+    
     /**
      * afficher des informations de plus court chemin et le dessiner
      */
@@ -274,7 +317,7 @@ public class Pcc extends Algo {
 			System.out.println("Le plus court chemin est 0.");
 		// si la saisie est bonne, on lance Dijkstra
 		else {
-			algoDijkstra();
+			algoPCC();
 			// s'il existe le Pcc, on affiche des informations et le temps exécution
 			if(existencePCC == true){
 				afficherPCC();

@@ -30,8 +30,7 @@ public class Launch {
 	System.out.println () ;
 	System.out.println ("0 - Quitter") ;
 	System.out.println ("1 - Composantes Connexes") ;
-	System.out.println ("2 - Plus court chemin standard") ;
-	System.out.println ("3 - Plus court chemin A-star") ;
+	System.out.println ("2 - Plus court chemin") ;
 	System.out.println ("4 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
 	System.out.println ("5 - Charger un fichier de chemin (.path) et le verifier.") ;
 	
@@ -80,8 +79,6 @@ public class Launch {
 		
 		case 2 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg) ; break ;
 		
-		case 3 : algo = new PccStar(graphe, this.fichierSortie (), this.readarg) ; break ;
-	
 		case 4 : graphe.situerClick() ; break ;
 
 		case 5 :
