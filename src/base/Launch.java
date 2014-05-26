@@ -1,6 +1,10 @@
 package base ;
 
-/*
+import Sort.LaunchTest;
+import core.* ;
+import java.io.* ;
+
+/**
  * Ce programme propose de lancer divers algorithmes sur les graphes
  * a partir d'un menu texte, ou a partir de la ligne de commande (ou des deux).
  *
@@ -13,9 +17,6 @@ package base ;
  * ecrit le resultat dans le fichier '/tmp/sortie', puis quitte le programme.
  */
 
-import core.* ;
-import java.io.* ;
-
 public class Launch {
 
     private final Readarg readarg ;
@@ -25,16 +26,17 @@ public class Launch {
     }
 
     public void afficherMenu () {
-	System.out.println () ;
-	System.out.println ("MENU") ;
-	System.out.println () ;
-	System.out.println ("0 - Quitter") ;
-	System.out.println ("1 - Composantes Connexes") ;
-	System.out.println ("2 - Plus court chemin") ;
-	System.out.println ("4 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
-	System.out.println ("5 - Charger un fichier de chemin (.path) et le verifier.") ;
-	
-	System.out.println () ;
+		System.out.println () ;
+		System.out.println ("MENU") ;
+		System.out.println () ;
+		System.out.println ("0 - Quitter") ;
+		System.out.println ("1 - Composantes Connexes") ;
+		System.out.println ("2 - Plus court chemin (Dijkstra standard & A Star)") ;
+		System.out.println ("3 - Lancer simple test Pcc (TOUS les couples de sommets dont un chemin existe entre eux)") ;
+		System.out.println ("4 - Lancer test en mode Sort Pcc (couples de sommets choisis aléatoirement)") ;
+		System.out.println ("5 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
+		System.out.println ("6 - Charger un fichier de chemin (.path) et le verifier.") ;
+		System.out.println () ;
     }
 
     public static void main(String[] args) {
@@ -50,7 +52,7 @@ public class Launch {
 	    System.out.println ("**") ;
 	    System.out.println () ;
 
-	    // On obtient ici le nom de la carte a utiliser.
+	    // On obtient ici le nom de la carte à utiliser.
 	    String nomcarte = this.readarg.lireString ("Nom du fichier .map a utiliser ? ") ;
 	    DataInputStream mapdata = Openfile.open (nomcarte) ;
 
@@ -59,8 +61,6 @@ public class Launch {
 
 	    Graphe graphe = new Graphe(nomcarte, mapdata, dessin) ;
 
-	    // Boucle principale : le menu est accessible 
-	    // jusqu'a ce que l'on quitte.
 	    boolean continuer = true ;
 	    int choix ;
 	    
@@ -68,10 +68,10 @@ public class Launch {
 		this.afficherMenu () ;
 		choix = this.readarg.lireInt ("Votre choix ? ") ;
 		
-		// Algorithme a executer
+		// Algorithme à exécuter
 		Algo algo = null ;
 		
-		// Le choix correspond au numero du menu.
+		// Le choix correspond au numéro du menu.
 		switch (choix) {
 		case 0 : continuer = false ; break ;
 
@@ -79,9 +79,13 @@ public class Launch {
 		
 		case 2 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg) ; break ;
 		
-		case 4 : graphe.situerClick() ; break ;
+		case 3 : algo = new simpleTest(graphe, this.readarg); break;
+		
+		case 4 : algo = new LaunchTest(graphe, this.readarg); break;
+		
+		case 5 : graphe.situerClick() ; break ;
 
-		case 5 :
+		case 6 :
 		    String nom_chemin = this.readarg.lireString ("Nom du fichier .path contenant le chemin ? ") ;
 		    graphe.verifierChemin(Openfile.open (nom_chemin), nom_chemin) ;
 		    break ;
@@ -104,21 +108,19 @@ public class Launch {
 	}
     }
 
-    // Ouvre un fichier de sortie pour ecrire les reponses
-    public PrintStream fichierSortie () {
-	PrintStream result = System.out ;
-
-	String nom = this.readarg.lireString ("Nom du fichier de sortie ? ") ;
-
-	if ("".equals(nom)) { nom = "/dev/null" ; }
-
-	try { result = new PrintStream(nom) ; }
-	catch (Exception e) {
-	    System.err.println ("Erreur a l'ouverture du fichier " + nom) ;
-	    System.exit(1) ;
-	}
-
-	return result ;
+    // Ouvre un fichier de sortie pour écrire les réponses
+	    public PrintStream fichierSortie () {
+		PrintStream result = System.out ;
+	
+		String nom = this.readarg.lireString ("Nom du fichier de sortie ? ") ;
+	
+		if ("".equals(nom)) { nom = "/dev/null" ; }
+	
+		try { result = new PrintStream(nom) ; }
+		catch (Exception e) {
+		    System.err.println ("Erreur a l'ouverture du fichier " + nom) ;
+		    System.exit(1) ;
+		}
+		return result ;
     }
-
 }

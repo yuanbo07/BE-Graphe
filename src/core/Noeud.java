@@ -2,6 +2,10 @@ package core;
 
 import java.util.ArrayList;
 
+/**
+ * La classe Noeud représente un noeud dans le graphe.
+ */
+
 public class Noeud {
 	private int id_noeud;
 	private float longitude;
@@ -23,6 +27,7 @@ public class Noeud {
 	public Noeud(){
 	}
 	
+	// fonction pour ajouter un successeur d'un noeud
 	public void addSuccesseur(Successeur succ){
 		this.listeSuccesseur.add(succ);
 	}

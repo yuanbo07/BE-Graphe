@@ -1,10 +1,11 @@
 package core ;
 
 import java.io.* ;
+
 import base.* ;
 
 /**
- * Classe abstraite representant un algorithme (connexite, plus court chemin, etc.)
+ * Classe abstraite représentant un algorithme (connexite, plus court chemin, etc.)
  */
 
 public abstract class Algo {
@@ -17,6 +18,9 @@ public abstract class Algo {
 		this.sortie = fichierSortie ;	
     }
     
-    public abstract void run() ;
-
+    protected Algo(Graphe gr) {
+		this.graphe = gr ;
+    }
+    
+    public abstract void run() throws IOException ;
 }

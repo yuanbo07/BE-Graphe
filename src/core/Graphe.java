@@ -1,23 +1,22 @@
 package core ;
 
-/**
- *   Classe representant un graphe.
- *   A vous de completer selon vos choix de conception.
- */
-
 import java.io.* ;
 import java.util.ArrayList;
 import base.* ;
 
+/**
+ *   Classe représentant un graphe.
+ */
+
 public class Graphe {
 
-    // Nom de la carte utilisee pour construire ce graphe
+    // Nom de la carte utilisée pour construire ce graphe
     private final String nomCarte ;
 
-    // Fenetre graphique
+    // Fenêtre graphique
     private final Dessin dessin ;
 
-    // Version du format MAP utilise'.
+    // Version du format MAP utilisé.
     private static final int version_map = 4 ;
     private static final int magic_number_map = 0xbacaff ;
 
@@ -28,7 +27,7 @@ public class Graphe {
     // Identifiant de la carte
     private int idcarte ;
 
-    // Numero de zone de la carte
+    // Numéro de zone de la carte
     private int numzone ;
     
     // Liste des noeuds dans un graphe
@@ -53,7 +52,7 @@ public class Graphe {
     public Dessin getDessin() { return dessin ; }
     public int getZone() { return numzone ; }
 
-    // Le constructeur cree le graphe en lisant les donnees depuis le DataInputStream
+    // Le constructeur crée le graphe en lisant les données depuis le DataInputStream
     public Graphe (String nomCarte, DataInputStream dis, Dessin dessin) {
 
 	this.nomCarte = nomCarte ;
@@ -64,15 +63,15 @@ public class Graphe {
 	// Voir le fichier "FORMAT" pour le detail du format binaire.
 	try {
 
-	    // Nombre d'aretes
+	    // Nombre d'arêtes
 	    int edges = 0 ;
 
-	    // Verification du magic number et de la version du format du fichier .map
+	    // Vérification du magic number et de la version du format du fichier .map
 	    int magic = dis.readInt () ;
 	    int version = dis.readInt () ;
 	    Utils.checkVersion(magic, magic_number_map, version, version_map, nomCarte, ".map") ;
 
-	    // Lecture de l'identifiant de carte et du numero de zone, 
+	    // Lecture de l'identifiant de carte et du numéro de zone, 
 	    this.idcarte = dis.readInt () ;
 	    this.numzone = dis.readInt () ;
 
@@ -83,16 +82,16 @@ public class Graphe {
 	    // Lecture des noeuds
 		for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
 			
-			// Lecture du noeud numero num_node
+			// lecture du noeud numéro num_node
 			longitude = ((float)dis.readInt ()) / 1E6f ;
 			latitude = ((float)dis.readInt ()) / 1E6f ;
-			// nb de routes sortantes = nb de successeur
+			// nombre de routes sortantes = nombre de successeur
 			nb_successeur = dis.readUnsignedByte() ;
 			// ajouter les noeuds dans la liste
 			this.listeNoeuds.add(new Noeud(num_node, latitude, longitude, nb_successeur));
 		}
 		
-		// fin de lecture des noeuds, on lit un octet à 255
+		// Fin de lecture des noeuds, on lit un octet à 255
 		Utils.checkByte(255, dis) ;
 		
 		// Lecture des descripteurs
@@ -101,41 +100,32 @@ public class Graphe {
 			listeDescripteurs.add(new Descripteur(dis));
 		}
 	    
-		// fin de lecture des descripteurs, on lit un octet à 254
+		// Fin de lecture des descripteurs, on lit un octet à 254
 	    Utils.checkByte(254, dis) ;
 	    
-	    // Lecture des successeurs (routes sortantes)
-	    
+	    // Lecture des successeurs (arcs sortantes)
 	    for (int num_node = 0 ; num_node < nb_nodes ; num_node++) {
-	    	// Lecture de tous les successeurs du noeud num_node
+	    	// lecture de tous les successeurs du noeud num_node
 			for (int num_succ = 0 ; num_succ < listeNoeuds.get(num_node).getNb_successeur() ; num_succ++) {
 				// zone du successeur
 			    int succ_zone = dis.readUnsignedByte() ;
-	
 			    // numero de noeud du successeur
 			    int dest_node = Utils.read24bits(dis) ;
-	
-			    // descripteur de l'arete
+			    // descripteur de l'arête
 			    int descr_num = Utils.read24bits(dis) ;
-	
-			    // longueur de l'arete en metres
+			    // longueur de l'arête en mètres
 			    int longueur  = dis.readUnsignedShort() ;
-	
-			    // Nombre de segments constituant l'arete
+			    // nombre de segments constituant l'arête
 			    int nb_segm   = dis.readUnsignedShort() ;
-			    
-			    // Ajouter successeur à ce num_node
+			    // ajouter successeur à ce num_node
 			    Noeud noueudCourant = listeNoeuds.get(num_node);
 			    Noeud noeudDestination = listeNoeuds.get(dest_node);
 			    Descripteur descripteur = listeDescripteurs.get(descr_num);
 			    
-			    /*
-			     * on ajoute le successeur de noeud courant
-			     * si c'est du sens double, on ajoute de plus un successeur pour le noeud de destination
-			     */
-			    
+			    // on ajoute le successeur du noeud courant
 			    Successeur succ = new Successeur(nb_segm, noeudDestination, longueur, descripteur, succ_zone);
 			    listeNoeuds.get(num_node).addSuccesseur(succ);
+			    // si le descripteur est du "sens double", on ajoute, de plus, un successeur pour le noeud de destination
 			    if (!listeDescripteurs.get(descr_num).isSensUnique()){
 			    	Successeur succDoubleSens = new Successeur(nb_segm, noueudCourant, longueur, descripteur, succ_zone);
 			    	listeNoeuds.get(dest_node).addSuccesseur(succDoubleSens);
@@ -148,7 +138,7 @@ public class Graphe {
 		    float current_long = listeNoeuds.get(num_node).getLongitude() ;
 		    float current_lat  = listeNoeuds.get(num_node).getLatitude() ;
 
-		    // Chaque segment est dessine'
+		    // Chaque segment est dessiné
 		    for (int i = 0 ; i < nb_segm ; i++) {
 				float delta_lon = (dis.readShort()) / 2.0E5f ;
 				float delta_lat = (dis.readShort()) / 2.0E5f ;
@@ -188,13 +178,28 @@ public class Graphe {
      *  @param long2 longitude du second point.
      *  @param lat2 latitude du second point.
      *  @return la distance entre les deux points en metres.
-     *  Methode Ã©crite par Thomas Thiebaud, mai 2013
+     *  Methode écrite par Thomas Thiebaud, mai 2013
      */
     public static double distance(double long1, double lat1, double long2, double lat2) {
         double sinLat = Math.sin(Math.toRadians(lat1))*Math.sin(Math.toRadians(lat2));
         double cosLat = Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2));
         double cosLong = Math.cos(Math.toRadians(long2-long1));
         return rayon_terre*Math.acos(sinLat+cosLat*cosLong);
+    }
+    
+    /**
+     *  Calculer la distance orthodromique entre deux noeuds
+     */
+    public static double distanceEntreDeuxNoeuds(Noeud n1, Noeud n2){
+    	return distance(n1.getLongitude(), n1.getLatitude(), n2.getLongitude(), n2.getLatitude());
+    }
+    
+    /**
+     *  Calculer le temps utilisé pour parcourir la distance orthodromique entre deux noeuds
+     *  On prend ici la vitesse maximale : 130 km/h
+     */
+    public static double tempsEntreDeuxNoeud(Noeud n1, Noeud n2){
+    	return distanceEntreDeuxNoeuds(n1,n2)*3600*0.001/130;
     }
 
     /**
@@ -237,7 +242,6 @@ public class Graphe {
      *  Charge un chemin depuis un fichier .path (voir le fichier FORMAT_PATH qui decrit le format)
      *  Verifie que le chemin est empruntable et calcule le temps de trajet.
      */
-    
     public void verifierChemin(DataInputStream dis, String nom_chemin) {
 	
 	try {
@@ -251,7 +255,7 @@ public class Graphe {
 	    int path_carte = dis.readInt () ;
 
 	    if (path_carte != this.idcarte) {
-		System.out.println("Le chemin du fichier " + nom_chemin + " n'appartient pas a la carte actuellement chargee." ) ;
+		System.out.println("Le chemin du fichier " + nom_chemin + " n'appartient pas a la carte actuellement chargée." ) ;
 		System.exit(1) ;
 	    }
 
@@ -270,7 +274,7 @@ public class Graphe {
 	    int current_zone = 0 ;
 	    int current_node = 0 ;
 	    
-	    // création d'un chemin
+	    // Création d'un chemin
 	    Noeud noeudDepart = listeNoeuds.get(first_node);
 	    Noeud noeudDestination = listeNoeuds.get(last_node);
 	    chemin = new Chemin(path_carte, nb_noeuds, noeudDepart, noeudDestination, first_zone, last_zone);
@@ -279,7 +283,7 @@ public class Graphe {
 			current_zone = dis.readUnsignedByte() ;
 			current_node = Utils.read24bits(dis) ;
 			
-		// ajouter les noeuds dans le chemin
+		// Ajouter les noeuds dans le chemin
 			chemin.addNoeud(listeNoeuds.get(current_node));
 
 		System.out.println(" --> " + current_zone + ":" + current_node) ;
@@ -290,9 +294,9 @@ public class Graphe {
 		    System.exit(1) ;
 		}
 	    
-	   // affichage
+	   // Affichage
 	   chemin.affichageInformationChemin();
-	   // dessiner le chemin sur la carte graphique
+	   // Dessiner le chemin sur la carte graphique
 	   chemin.dessinerChemin(dessin);
 
 	    

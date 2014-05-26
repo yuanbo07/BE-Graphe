@@ -18,7 +18,7 @@ import java.util.* ;
 
 public class BinaryHeap<E extends Comparable<E>> {
 
-    private int currentSize; // Number of elements in heap
+    protected int currentSize; // Number of elements in heap
 
     // Java genericity does not work with arrays.
     // We have to use an ArrayList
@@ -96,7 +96,7 @@ public class BinaryHeap<E extends Comparable<E>> {
     	// Get element x by its index
 		E x = this.array.get(index) ;
 	
-		// If x (which is on "index" place) is smaller than its parent node, we swap it with its parent (percolateUp)
+		// In the case where x (which is on "index" place) is smaller than its parent node, we swap it with its parent (percolateUp)
 	        for( ; index > 0 && x.compareTo(this.array.get(index_parent(index)) ) < 0; index = index_parent(index) ) {
 		    E moving_val = this.array.get(index_parent(index)) ;
 	            this.arraySet(index, moving_val) ;

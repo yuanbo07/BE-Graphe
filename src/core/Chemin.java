@@ -5,7 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import base.Dessin;
 
+/**
+ *   Classe représentant un chemin
+ */
+
 public class Chemin {
+	
+	// variables qui représentent un chemin
 	private int numCarte;
 	private int nbNoeud;
 	private Noeud noeudDepart;
@@ -14,6 +20,7 @@ public class Chemin {
 	private int zoneDestination;
 	private ArrayList<Noeud> listeNoeudChemin= new ArrayList<Noeud>();
 	
+	// variables qui représentent les différents coûts associés à un chemin
 	private double coutEnTempsChemin = 0;
 	private double distanceCoutEnTempsChemin = 0;
 	private double coutEnDistanceChemin = 0;
@@ -31,12 +38,13 @@ public class Chemin {
 		this.zoneDestination = zoneDestination;
 	}
 	
+	// constructeur par défault pour construire le plus court chemin
 	public Chemin(){
 	}
 	
     /**
-     * renvoyer une liste de successeurs qui plus d'un chemin entre deux noeuds 
-     * c'est le cas "Multi-chemin"
+     * renvoyer une liste de successeurs qui ont plus d'un chemin entre deux noeuds 
+     * c'est le cas dit "Multi-chemin"
      */
 	public ArrayList<Successeur> getListeSuccMultiChemin(Noeud noeudCourant, Noeud noeudSuivant){
 		ArrayList<Successeur> listeSuccMultiChemin = new ArrayList<Successeur>();
@@ -48,88 +56,85 @@ public class Chemin {
 	}
 	
     /**
-     * on cherche l'arrête la plus courte en distance, puis on renvoie ce successeur
+     * on cherche l'arête la plus courte en distance, puis on renvoie ce successeur
      */
-	public Successeur getSuccPlusCourtArrete(Noeud noeudCourant, Noeud noeudSuivant){
-		// coût de la plus courte arrête entre deux noeuds successifs
-		double coutDistanceArrete = 0;
+	public Successeur getSuccPlusCourtArete(Noeud noeudCourant, Noeud noeudSuivant){
+		// coût de la plus courte arête entre deux noeuds successifs
+		double coutDistanceArete = 0;
 		// liste qui stocke les successeurs à comparer entre eux
 		ArrayList<Successeur> listeSuccAComparer = new ArrayList<Successeur>();
 		// iterator
 		int i = 0;
-		// le successeur qui a la plus courte arrête, à renvoyer par cette fonction
+		// le successeur qui a la plus courte arête, à renvoyer par cette fonction
 		Successeur s = new Successeur();
 		// on crée une liste "Multi-chemin"
 		listeSuccAComparer = getListeSuccMultiChemin(noeudCourant, noeudSuivant);
-		// on initialise le coût d'arrête avec le coût de première arrête qu'on a obtenu
-		coutDistanceArrete = listeSuccAComparer.get(0).getLongueurArrete();
-		// on cherche le plus courte arrête
+		// on initialise le coût d'arête avec le coût de première arête qu'on a obtenu
+		coutDistanceArete = listeSuccAComparer.get(0).getLongueurArete();
+		// on cherche le plus courte arête
 		for (;i<listeSuccAComparer.size();i++){
-			double arreteCourant = listeSuccAComparer.get(i).getLongueurArrete();
-			if (arreteCourant < coutDistanceArrete)
-				coutDistanceArrete = arreteCourant;
+			double areteCourant = listeSuccAComparer.get(i).getLongueurArete();
+			if (areteCourant < coutDistanceArete)
+				coutDistanceArete = areteCourant;
 				s = listeSuccAComparer.get(i);
 		}
 		return s;
 	}
 
     /**
-     * on cherche l'arrête la plus courte en temps, puis on renvoie ce successeur
+     * on cherche l'arête la plus courte en temps, puis on renvoie ce successeur
+     * le principe est le même avec celui en distance
      */
 	public Successeur getSuccPlusCourtTemps(Noeud noeudCourant, Noeud noeudSuivant){
-		double coutTempsArrete = 0;
+		double coutTempsArete = 0;
 		ArrayList<Successeur> listeSuccAComparer = new ArrayList<Successeur>();
 		int i = 0;
 		Successeur s = new Successeur();
 		listeSuccAComparer = getListeSuccMultiChemin(noeudCourant, noeudSuivant);
-		coutTempsArrete = listeSuccAComparer.get(0).calculTempsArrete();
+		coutTempsArete = listeSuccAComparer.get(0).calculTempsArete();
 		for (;i<listeSuccAComparer.size();i++){
-			double coutTempsCourant = listeSuccAComparer.get(i).calculTempsArrete();
-			if (coutTempsCourant < coutTempsArrete)
-				coutTempsArrete = coutTempsCourant;
+			double coutTempsCourant = listeSuccAComparer.get(i).calculTempsArete();
+			if (coutTempsCourant < coutTempsArete)
+				coutTempsArete = coutTempsCourant;
 				s = listeSuccAComparer.get(i);
 		}
 		return s;
 	}
 	
     /**
-     * fonction qui cherche un chemin le plus court en distance entre noeudDepart et noeudDestination
-     * et aussi le temps utilisé dans ce cas
+     * deux fonctions qui calculent le chemin plus court en distance / en temp, entre noeudDepart et noeudDestination
+     * et calcule aussi le temps / distance utilisé dans cette situation, c'est pour traiter les cas de "Multi-chemin"
      */
 	public void calculCheminPlusCourtDistance(){
 		// les deux noeuds qui vont parcourir tout le chemin
 		Noeud noeudCourant;
 		Noeud noeudSuivant;
-		double coutDistanceArrete = 0;
+		double coutDistanceArete = 0;
 		double coutEnDistanceChemin = 0;
-		double coutTempsArrete = 0;
+		double coutTempsArete = 0;
 		double tempsCoutEnDistanceChemin = 0;
 		int i = 0;
 
 		for (;i<listeNoeudChemin.size()-1;i++){
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
-			// on prend toujours la plus courte arrête entre deux noeuds successifs
-			coutDistanceArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).getLongueurArrete();
-			coutTempsArrete = getSuccPlusCourtArrete(noeudCourant, noeudSuivant).calculTempsArrete();
-			coutEnDistanceChemin += coutDistanceArrete;
-			tempsCoutEnDistanceChemin += coutTempsArrete;
+			// on prend toujours la plus courte arête entre deux noeuds successifs
+			coutDistanceArete = getSuccPlusCourtArete(noeudCourant, noeudSuivant).getLongueurArete();
+			coutTempsArete = getSuccPlusCourtArete(noeudCourant, noeudSuivant).calculTempsArete();
+			coutEnDistanceChemin += coutDistanceArete;
+			tempsCoutEnDistanceChemin += coutTempsArete;
 		}
 		this.coutEnDistanceChemin = coutEnDistanceChemin;
 		this.tempsCoutEnDistanceChemin = tempsCoutEnDistanceChemin;
 	}
 	
-    /**
-     * une fonction qui cherche un chemin le plus court en temps entre noeudDepart et noeudDestination
-     * et aussi la distance utilisé dans ce cas
-     */
 	public void calculCheminPlusCourtTemps(){
 		// les deux noeuds qui vont parcourir tout le chemin
 		Noeud noeudCourant;
 		Noeud noeudSuivant;
-		double coutTempsArrete = 0;
+		double coutTempsArete = 0;
 		double coutEnTempsChemin = 0;
-		double coutDistanceArrete = 0;
+		double coutDistanceArete = 0;
 		double distanceCoutEnTempsChemin = 0;
 		int i = 0;
 
@@ -137,10 +142,10 @@ public class Chemin {
 			noeudCourant = listeNoeudChemin.get(i);
 			noeudSuivant = listeNoeudChemin.get(i+1);
 			// on prend toujours le plus court temps entre deux noeuds successifs
-			coutTempsArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).calculTempsArrete();
-			coutDistanceArrete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).getLongueurArrete();
-			coutEnTempsChemin += coutTempsArrete;
-			distanceCoutEnTempsChemin += coutDistanceArrete;
+			coutTempsArete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).calculTempsArete();
+			coutDistanceArete = getSuccPlusCourtTemps(noeudCourant, noeudSuivant).getLongueurArete();
+			coutEnTempsChemin += coutTempsArete;
+			distanceCoutEnTempsChemin += coutDistanceArete;
 		}
 		this.coutEnTempsChemin = coutEnTempsChemin;
 		this.distanceCoutEnTempsChemin = distanceCoutEnTempsChemin;
@@ -227,22 +232,28 @@ public class Chemin {
 	}
 
     /**
-     * ces deux fonctions sont utilisées pour afficher le coût en distance ou temps
+     * ces deux fonctions sont utilisées pour afficher le coût en distance ou en temps
      */
-	public void affichageCoutEnTemps(){
+	public void affichageCoutEnDistance(){
+    	System.out.println();
 	    System.out.println("Coût en distance :");
-	    System.out.println("Distance du chemin : " + this.getCoutEnDistanceChemin());
-	    System.out.println("Temps du chemin dans ce cas : " + this.getTempsCoutEnDistanceChemin());
+    	System.out.println();
+	    System.out.println("La distance du chemin : " + this.getCoutEnDistanceChemin());
+	    System.out.println("Le temps pour parcourir ce chemin dans ce cas : " + this.getTempsCoutEnDistanceChemin());
+    	System.out.println();
 	}
 	
-	public void affichageCoutEnDistance(){
-	    System.out.println("Coût en distance :");
-	    System.out.println("Temps du chemin : " + this.getCoutEnTempsChemin());
+	public void affichageCoutEnTemps(){
+    	System.out.println();
+	    System.out.println("Coût en temps :");
+    	System.out.println();
+	    System.out.println("Le temps du chemin : " + this.getCoutEnTempsChemin());
 	    System.out.println("La distance du chemin dans ce cas : " + this.getDistanceCoutEnTempsChemin());
+    	System.out.println();
 	}
 	
     /**
-     * fonction qui affiche des information sur un chemin
+     * fonction qui affiche des informations sur un chemin
      */
 	public void affichageInformationChemin(){
 		
@@ -251,7 +262,7 @@ public class Chemin {
 		calculCheminPlusCourtDistance();
 		
 		// affichage
-	    System.out.println("******INFORMATION DU CHEMIN************");
+	    System.out.println("****** INFORMATION DU CHEMIN ******");
 	    System.out.println();
 	    System.out.println("Ce chemin contient " + getNbNoeud() + " noeuds.");
 	    System.out.println("Ce chemin contient " + getListeSuccMultiChemin(noeudDepart, noeudDestination).size() + " multi-chemin.");
@@ -259,8 +270,7 @@ public class Chemin {
 	    affichageCoutEnDistance();
 	    System.out.println();
 	}
-	
-	
+
     /**
      * les quatre fonctions "getters" qui retournent résultats en bonne unité (String)
      */
@@ -283,6 +293,31 @@ public class Chemin {
 	public String getTempsCoutEnDistanceChemin() {
 		calculCheminPlusCourtDistance();
 		return tempsEnMinToString(tempsCoutEnDistanceChemin);
+	}
+	
+    /**
+     * les quatre fonctions "getters" qui retournent résultats en mode "test"
+     * le coût en distance est en "mètre", et coût en temps en "seconde"
+     */
+
+	public double getCoutEnTempsCheminModeTest() {
+		calculCheminPlusCourtTemps();
+		return (double)((int)(coutEnTempsChemin*100))/100;
+	}
+
+	public double getDistanceCoutEnTempsCheminModeTest() {
+		calculCheminPlusCourtTemps();
+		return distanceCoutEnTempsChemin;
+	}
+
+	public double getCoutEnDistanceCheminModeTest() {
+		calculCheminPlusCourtDistance();
+		return coutEnDistanceChemin;
+	}
+
+	public double getTempsCoutEnDistanceCheminModeTest() {
+		calculCheminPlusCourtDistance();
+		return tempsCoutEnDistanceChemin;
 	}
 	
     /**

@@ -2,23 +2,27 @@ package core;
 
 import base.Descripteur;
 
+/**
+ *   Classe représentant un successeur (un arc sortant)
+ */
+
 public class Successeur {
 
+	private int succ_zone;
 	private int nb_segment;
 	private Noeud noeudDestination;
-	private double longueurArrete;
+	private double longueurArete;
 	private Descripteur descripteur;
-	private int succ_zone;
 	
 	/**
 	 * constructeurs
 	 */
 	
-	public Successeur(int nb_segment, Noeud noeudDestination, int longueurArrete, Descripteur descripteur, int succ_zone){
+	public Successeur(int nb_segment, Noeud noeudDestination, int longueurArete, Descripteur descripteur, int succ_zone){
 		super();
 		this.nb_segment = nb_segment;
 		this.noeudDestination = noeudDestination;
-		this.longueurArrete = longueurArrete;
+		this.longueurArete = longueurArete;
 		this.descripteur = descripteur;
 		this.succ_zone = succ_zone;
 	}
@@ -27,11 +31,11 @@ public class Successeur {
 	}
 	
 	/**
-	 * fonction qui calcule le temps utilisé pour une arrête
+	 * fonction qui calcule le temps utilisé pour une arête, en fonction de sa distance et sa vitesse maximale
 	 * le temps renvoyé est en unité "seconde"
 	 */
-	public double calculTempsArrete(){
-		double t = this.longueurArrete * 3600 / (this.descripteur.vitesseMax()*1000);
+	public double calculTempsArete(){
+		double t = this.longueurArete * 3600/ (this.descripteur.vitesseMax()*1000) ;
 		return t;
 	}
 	
@@ -55,16 +59,16 @@ public class Successeur {
 		this.noeudDestination = noeudDestination;
 	}
 	
-	public double getLongueurArrete() {
-		return longueurArrete;
+	public double getLongueurArete() {
+		return longueurArete;
 	}
 	
-	public double getTempsArrete() {
-		return this.calculTempsArrete();
+	public double getTempsArete() {
+		return this.calculTempsArete();
 	}
 	
-	public void setLongueurArrete(int longueurArrete) {
-		this.longueurArrete = longueurArrete;
+	public void setlongueurArete(int longueurArete) {
+		this.longueurArete = longueurArete;
 	}
 	
 	public int getNum_zone() {
