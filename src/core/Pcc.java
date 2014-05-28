@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import base.Readarg ;
 import java.io.PrintStream;
+import java.util.Random;
 
 /**
  * La classe Pcc est pour calculer le plus court chemin à la fois en algorithme Dijkstra Standard et en Dijkstra A Star.
@@ -167,7 +168,7 @@ public class Pcc extends Algo {
 		        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
 		        				tasLabel.insert(labelNoeudSuccCourant);
 		        				nbParcouru++;
-		        				dessinerSegment(noeudCourant,noeudSuccCourant);
+		        				//dessinerSegment(noeudCourant,noeudSuccCourant);
 		        			}
 			    			// au final, on met à jour le tas
 					    	tasLabel.update(labelNoeudSuccCourant);
@@ -197,7 +198,12 @@ public class Pcc extends Algo {
      * fonction qui dessine un segment entre deux noeuds
      */
     public void dessinerSegment(Noeud n1, Noeud n2){
-		graphe.getDessin().setColor(Color.BLUE);
+    	Random rand = new Random();
+    	float r = rand.nextFloat();
+    	float g = rand.nextFloat();
+    	float b = rand.nextFloat();
+    	Color randomColor = new Color(r, g, b);
+		graphe.getDessin().setColor(randomColor);
 		graphe.getDessin().setWidth(2);
 		graphe.getDessin().drawLine(n1.getLongitude(), n1.getLatitude(), n2.getLongitude(), n2.getLatitude());
     }
@@ -253,6 +259,11 @@ public class Pcc extends Algo {
 		return trouveDest;
 	}
 	
+	
+	
+	public void afficherPlusCourtChemin(){
+		plusCourtChemin.dessinerChemin(graphe.getDessin());
+	}
     /**
      * fonction qui affiche des informations concernant le plus court chemin obtenu, et puis le dessiner
      */
@@ -274,7 +285,7 @@ public class Pcc extends Algo {
 		if(isEnTemps == 1)
 			plusCourtChemin.affichageCoutEnTemps();
 		// dessiner le chemin sur la carte
-		plusCourtChemin.dessinerChemin(graphe.getDessin());
+		afficherPlusCourtChemin();
     }
     
     /**

@@ -4,8 +4,6 @@ package covoiturage;
 import core.*;
 import java.awt.Color;
 import java.util.HashMap;
-import base.Readarg ;
-import java.io.PrintStream;
 
 /**
  * La classe Pcc est pour calculer le plus court chemin à la fois en algorithme Dijkstra Standard et en Dijkstra A Star.
@@ -13,9 +11,11 @@ import java.io.PrintStream;
  */
 
 public class PccDestination extends Algo {
-
+	
+	// noeud destination
     protected int destination ;
-	// nombre de sommets dans le graphe
+	
+    // nombre de sommets dans le graphe
 	private int numNoeudGraphe = graphe.getListeNoeuds().size();
 	
     // HashMap qui met en correspondance le numéro de noeud et son label
@@ -39,15 +39,18 @@ public class PccDestination extends Algo {
 	// boolean qui indique si l'on est en mode "test"
 	private boolean enModeTest = false ;
 	
+	BinaryHeap<Label> tasNoeudEnCommun = new BinaryHeap<Label>();
+	
 	/**
 	 * constructeurs
 	 */
 	// constructeur spécifique pour lancer le test
-    public PccDestination(Graphe gr, int destination) {
+    public PccDestination(Graphe gr, int destination, BinaryHeap<Label> tasNoeudEnCommun) {
 		super(gr);
 		this.destination = destination;
 		// on passe en mode test
 		this.enModeTest = true ;
+		this.tasNoeudEnCommun = tasNoeudEnCommun ;
     }
 
 	/**
@@ -93,12 +96,9 @@ public class PccDestination extends Algo {
 	        	Noeud noeudCourant = graphe.getListeNoeuds().get(labelCourant.getId_sommetCourant());
 		        for (Successeur pred : noeudCourant.getListePredecesseur()){
 		        	// si c'est un chemin non routier, on ne le traite pas
-		    		System.out.println(" Le nombre de predecesseur : " + noeudCourant.getListePredecesseur().size()) ;
 		            	if(pred.getDescripteur().getType() != 'z'){
 		        		// on choisit un noeud predecesseur courant
-		            	
 		        		Noeud noeudPredCourant = pred.getNoeudPere();
-		        		System.out.println("Numéro noeud père est : " + pred.getNoeudPere().getId_noeud());
 		        		Label labelNoeudPredCourant = mapCorrespondanceNoeudLabel.get(noeudPredCourant.getId_noeud());
 		        		// si ce noeud predecesseur n'est pas encore marqué par algo
 		        		if(!labelNoeudPredCourant.isMarque()){
@@ -119,6 +119,10 @@ public class PccDestination extends Algo {
 		        				nbParcouru++;
 		        				dessinerSegment(noeudCourant,noeudPredCourant);
 		        			}
+		        			if(tasNoeudEnCommun.isInHeap(labelNoeudPredCourant)){
+		        				labelNoeudPredCourant.setCoutDestination(labelNoeudPredCourant.getCoutCourant());
+		        				tasNoeudEnCommun.update(labelNoeudPredCourant);
+		        			}
 			    			// au final, on met à jour le tas
 					    	tasLabel.update(labelNoeudPredCourant);
 			    		}
@@ -127,7 +131,7 @@ public class PccDestination extends Algo {
 		        	updateNbElementMaxTas();
 		        }
 	    	}
-    }  
+}
     
     /**
      * fonction qui met à jour le nombre maximal des éléments dans le tas

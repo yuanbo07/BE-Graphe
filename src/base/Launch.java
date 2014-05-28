@@ -37,7 +37,8 @@ public class Launch {
 		System.out.println ("4 - Lancer test en mode Sort Pcc (couples de sommets choisis aléatoirement)") ;
 		System.out.println ("5 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
 		System.out.println ("6 - Charger un fichier de chemin (.path) et le verifier.") ;
-		System.out.println ("7 - Problème covoiturage") ;
+		System.out.println ("7 - Problème covoiturage - Synchronisation sans contrainte") ;
+		System.out.println ("8 - Problème covoiturage - Synchronisation avec limite de déplacement du piéton") ;
 		System.out.println () ;
     }
 

@@ -3,6 +3,8 @@ package core;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
+
 import base.Dessin;
 
 /**
@@ -220,7 +222,12 @@ public class Chemin {
 	 * drawLine(long1, lat1, long2, lat2)
      */
 	public void dessinerChemin(Dessin d){
-		d.setColor(Color.cyan);
+    	Random rand = new Random();
+    	float r = rand.nextFloat();
+    	float g = rand.nextFloat();
+    	float b = rand.nextFloat();
+    	Color randomColor = new Color(r, g, b);
+		d.setColor(randomColor);
 		d.setWidth(5);
 		for (int i = 0 ; i< this.listeNoeudChemin.size()-1 ; i++){
 			float longitudeCourant = this.listeNoeudChemin.get(i).getLongitude();

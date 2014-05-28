@@ -10,7 +10,6 @@ public class Label implements Comparable<Label> {
 	
 	// un booléen valant vrai si le sommet est définitivement fixé par l'algorithme
 	private boolean marquage;
-	
 	// un booléen valant vrai si le sommet est parcouru par le piéton
 	private boolean parcouru_pieton;
 	// un booléen valant vrai si le sommet est parcouru par l'automobiliste
@@ -23,8 +22,8 @@ public class Label implements Comparable<Label> {
 	private int id_sommetPere;
 	// le coût en distance ou en temps, entre le sommet courant et le sommet origine 
 	private double coutCourant;
-	// le coût en distance ou en temps, entre le sommet courant et le sommet origine 
-	private double coutCovoiturage;
+	// le coût de destination
+	private double coutDestination = 0;
 	// le coût estimation en distance ou en temps, entre le sommet courant et le sommet destinataire
 	private double coutEstimation = 0;
 	// la somme de coutCourant et coutEstimation
@@ -61,7 +60,7 @@ public class Label implements Comparable<Label> {
 	public int compareTo(Label l) {
 		
 		int compareResult = 0;
-		this.coutCourantAvecEstimation = this.coutCourant + this.coutEstimation ;
+		this.coutCourantAvecEstimation = this.coutCourant + this.coutEstimation + this.coutDestination;
 		
 		if(this.getCoutCourantAvecEstimation() < l.getCoutCourantAvecEstimation())
 			compareResult = -1;
@@ -146,12 +145,12 @@ public class Label implements Comparable<Label> {
 		this.coutEstimation = coutEstimation;
 	}
 
-	public double getCoutCovoiturage() {
-		return coutCovoiturage;
+	public double getCoutDestination() {
+		return coutDestination;
 	}
 
-	public void setCoutCovoiturage(double coutCovoiturage) {
-		this.coutCovoiturage = coutCovoiturage;
+	public void setCoutDestination(double coutDestination) {
+		this.coutDestination = coutDestination;
 	}
 
 	public boolean isParcouru_destination() {

@@ -1,11 +1,8 @@
 package covoiturage ;
 
-import base.* ;
 import core.* ;
 import java.awt.Color;
 import java.util.HashMap;
-import base.Readarg ;
-import java.io.PrintStream;
 
 /**
  * La classe Pcc est pour calculer le plus court chemin à la fois en algorithme Dijkstra Standard et en Dijkstra A Star.
@@ -156,7 +153,6 @@ public class PccPietonAutomobiliste extends Algo {
     public void run(){
         	long debut = System.nanoTime();
         		algoPCC();
-        		System.out.println(" Lancer Dijkstra \n ") ;
         		tempsExecution = System.nanoTime() - debut;
     }
 }
