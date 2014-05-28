@@ -1,7 +1,8 @@
 package base ;
 
-import Sort.LaunchTest;
 import core.* ;
+import Sort.LaunchTest;
+import covoiturage.LancerCovoiturage;
 import java.io.* ;
 
 /**
@@ -36,6 +37,7 @@ public class Launch {
 		System.out.println ("4 - Lancer test en mode Sort Pcc (couples de sommets choisis aléatoirement)") ;
 		System.out.println ("5 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
 		System.out.println ("6 - Charger un fichier de chemin (.path) et le verifier.") ;
+		System.out.println ("7 - Problème covoiturage") ;
 		System.out.println () ;
     }
 
@@ -79,7 +81,7 @@ public class Launch {
 		
 		case 2 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg) ; break ;
 		
-		case 3 : algo = new simpleTest(graphe, this.readarg); break;
+		case 3 : algo = new SimpleTest(graphe, this.readarg); break;
 		
 		case 4 : algo = new LaunchTest(graphe, this.readarg); break;
 		
@@ -89,6 +91,8 @@ public class Launch {
 		    String nom_chemin = this.readarg.lireString ("Nom du fichier .path contenant le chemin ? ") ;
 		    graphe.verifierChemin(Openfile.open (nom_chemin), nom_chemin) ;
 		    break ;
+		    
+		case 7 : algo = new LancerCovoiturage(graphe, this.readarg); break;
 
 		default:
 		    System.out.println ("Choix de menu incorrect : " + choix) ;

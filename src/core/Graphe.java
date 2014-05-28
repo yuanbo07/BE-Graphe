@@ -118,17 +118,21 @@ public class Graphe {
 			    // nombre de segments constituant l'arête
 			    int nb_segm   = dis.readUnsignedShort() ;
 			    // ajouter successeur à ce num_node
-			    Noeud noueudCourant = listeNoeuds.get(num_node);
+			    Noeud noeudCourant = listeNoeuds.get(num_node);
 			    Noeud noeudDestination = listeNoeuds.get(dest_node);
 			    Descripteur descripteur = listeDescripteurs.get(descr_num);
 			    
 			    // on ajoute le successeur du noeud courant
 			    Successeur succ = new Successeur(nb_segm, noeudDestination, longueur, descripteur, succ_zone);
+			    succ.setNoeudPere(noeudCourant);
 			    listeNoeuds.get(num_node).addSuccesseur(succ);
+			    listeNoeuds.get(num_node).addPredecesseur(succ);
 			    // si le descripteur est du "sens double", on ajoute, de plus, un successeur pour le noeud de destination
 			    if (!listeDescripteurs.get(descr_num).isSensUnique()){
-			    	Successeur succDoubleSens = new Successeur(nb_segm, noueudCourant, longueur, descripteur, succ_zone);
+			    	Successeur succDoubleSens = new Successeur(nb_segm, noeudCourant, longueur, descripteur, succ_zone);
 			    	listeNoeuds.get(dest_node).addSuccesseur(succDoubleSens);
+			    	listeNoeuds.get(dest_node).addPredecesseur(succDoubleSens);
+			    	succDoubleSens.setNoeudPere(noeudDestination);
 			    }
 			    
 		    edges++ ;

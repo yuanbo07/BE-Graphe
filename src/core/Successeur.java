@@ -11,6 +11,7 @@ public class Successeur {
 	private int succ_zone;
 	private int nb_segment;
 	private Noeud noeudDestination;
+	private Noeud noeudPere;
 	private double longueurArete;
 	private Descripteur descripteur;
 	
@@ -26,7 +27,7 @@ public class Successeur {
 		this.descripteur = descripteur;
 		this.succ_zone = succ_zone;
 	}
-
+	
 	public Successeur(){
 	}
 	
@@ -85,5 +86,13 @@ public class Successeur {
 	
 	public void setDescripteur(Descripteur descripteur) {
 		this.descripteur = descripteur;
+	}
+
+	public Noeud getNoeudPere() {
+		return noeudPere;
+	}
+
+	public void setNoeudPere(Noeud noeudPere) {
+		this.noeudPere = noeudPere;
 	}
 }

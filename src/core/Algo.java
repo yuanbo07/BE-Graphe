@@ -1,6 +1,7 @@
 package core ;
 
 import java.io.* ;
+import java.util.ArrayList;
 
 import base.* ;
 
@@ -9,7 +10,7 @@ import base.* ;
  */
 
 public abstract class Algo {
-
+	public ArrayList<Label> listeNoeudCommun = new ArrayList<Label>();
     protected PrintStream sortie ;
     protected Graphe graphe ;
     
@@ -17,7 +18,7 @@ public abstract class Algo {
 		this.graphe = gr ;
 		this.sortie = fichierSortie ;	
     }
-    
+        
     protected Algo(Graphe gr) {
 		this.graphe = gr ;
     }

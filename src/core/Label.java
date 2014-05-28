@@ -10,12 +10,21 @@ public class Label implements Comparable<Label> {
 	
 	// un booléen valant vrai si le sommet est définitivement fixé par l'algorithme
 	private boolean marquage;
+	
+	// un booléen valant vrai si le sommet est parcouru par le piéton
+	private boolean parcouru_pieton;
+	// un booléen valant vrai si le sommet est parcouru par l'automobiliste
+	private boolean parcouru_automobiliste;
+	// un booléen valant vrai si le sommet est parcouru par destination
+	private boolean parcouru_destination;
 	// le numéro du sommet qui est associé à ce label
 	private int id_sommetCourant;
 	// le numéro du sommet précédent dans la recherche de plus court chemin
 	private int id_sommetPere;
 	// le coût en distance ou en temps, entre le sommet courant et le sommet origine 
 	private double coutCourant;
+	// le coût en distance ou en temps, entre le sommet courant et le sommet origine 
+	private double coutCovoiturage;
 	// le coût estimation en distance ou en temps, entre le sommet courant et le sommet destinataire
 	private double coutEstimation = 0;
 	// la somme de coutCourant et coutEstimation
@@ -88,6 +97,26 @@ public class Label implements Comparable<Label> {
 	public void setMarquage(boolean marquage) {
 		this.marquage = marquage;
 	}
+	
+	// deux fonctions qui indiquent si le sommet est parcouru par le piéton / automobiliste
+	
+	public boolean isParcouru_pieton() {
+		return parcouru_pieton;
+	}
+
+	public boolean isParcouru_automobiliste() {
+		return parcouru_automobiliste;
+	}
+	
+	// deux fonctions qui marque le sommet comme "parcouru" par le piéton / automobiliste
+	
+	public void setParcouru_pieton(boolean parcouru_pieton) {
+		this.parcouru_pieton = parcouru_pieton;
+	}
+
+	public void setParcouru_automobiliste(boolean parcouru_automobiliste) {
+		this.parcouru_automobiliste = parcouru_automobiliste;
+	}
 
 	public int getId_sommetCourant() {
 		return id_sommetCourant;
@@ -115,5 +144,21 @@ public class Label implements Comparable<Label> {
 
 	public void setCoutEstimation(double coutEstimation) {
 		this.coutEstimation = coutEstimation;
+	}
+
+	public double getCoutCovoiturage() {
+		return coutCovoiturage;
+	}
+
+	public void setCoutCovoiturage(double coutCovoiturage) {
+		this.coutCovoiturage = coutCovoiturage;
+	}
+
+	public boolean isParcouru_destination() {
+		return parcouru_destination;
+	}
+
+	public void setParcouru_destination(boolean parcouru_destination) {
+		this.parcouru_destination = parcouru_destination;
 	}
 }

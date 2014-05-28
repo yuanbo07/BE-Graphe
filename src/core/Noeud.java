@@ -12,6 +12,8 @@ public class Noeud {
 	private float latitude;
 	private int nb_successeur;
 	private ArrayList<Successeur> listeSuccesseur = new ArrayList<Successeur>();
+	// utilisé pour les problèmes sous contraintes
+	private ArrayList<Successeur> listePredecesseur = new ArrayList<Successeur>();
 	
 	/**
 	 * constructeurs
@@ -30,6 +32,11 @@ public class Noeud {
 	// fonction pour ajouter un successeur d'un noeud
 	public void addSuccesseur(Successeur succ){
 		this.listeSuccesseur.add(succ);
+	}
+	
+	// fonction pour ajouter un predesseur d'un noeud
+	public void addPredecesseur(Successeur succ){
+		succ.getNoeudDestination().listePredecesseur.add(succ);
 	}
 	
 	/**
@@ -74,5 +81,13 @@ public class Noeud {
 
 	public void setNb_successeur(int nb_successeur) {
 		this.nb_successeur = nb_successeur;
+	}
+
+	public ArrayList<Successeur> getListePredecesseur() {
+		return listePredecesseur;
+	}
+
+	public void setListePredecesseur(ArrayList<Successeur> listePredecesseur) {
+		this.listePredecesseur = listePredecesseur;
 	}	
 }
