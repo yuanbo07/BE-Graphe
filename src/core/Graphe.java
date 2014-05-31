@@ -111,7 +111,7 @@ public class Graphe {
 			    int succ_zone = dis.readUnsignedByte() ;
 			    // numero de noeud du successeur
 			    int dest_node = Utils.read24bits(dis) ;
-			    // descripteur de l'arête
+			    // numéro de descripteur
 			    int descr_num = Utils.read24bits(dis) ;
 			    // longueur de l'arête en mètres
 			    int longueur  = dis.readUnsignedShort() ;
@@ -124,14 +124,18 @@ public class Graphe {
 			    
 			    // on ajoute le successeur du noeud courant
 			    Successeur succ = new Successeur(nb_segm, noeudDestination, longueur, descripteur, succ_zone);
+			    // on set le père de noeud courant
 			    succ.setNoeudPere(noeudCourant);
+			    // on ajoute le successeur à ce noeud courant
 			    listeNoeuds.get(num_node).addSuccesseur(succ);
-			    listeNoeuds.get(num_node).addPredecesseur(succ);
+			    // on ajoute le predecesseur à noeud destination de cet arc sortant
+			    listeNoeuds.get(dest_node).addPredecesseur(succ);
 			    // si le descripteur est du "sens double", on ajoute, de plus, un successeur pour le noeud de destination
 			    if (!listeDescripteurs.get(descr_num).isSensUnique()){
 			    	Successeur succDoubleSens = new Successeur(nb_segm, noeudCourant, longueur, descripteur, succ_zone);
 			    	listeNoeuds.get(dest_node).addSuccesseur(succDoubleSens);
-			    	listeNoeuds.get(dest_node).addPredecesseur(succDoubleSens);
+			    	// on ajoute un predecesseur à noeud courant
+			    	listeNoeuds.get(num_node).addPredecesseur(succDoubleSens);
 			    	succDoubleSens.setNoeudPere(noeudDestination);
 			    }
 			    

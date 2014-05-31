@@ -32,7 +32,6 @@ public class Descripteur {
      * coastline      -> 'z'
     */
 
-
     private char type ;
 
     private boolean sensUnique ;

@@ -16,7 +16,7 @@ import core.* ;
 
 public class LaunchTest extends Algo {
 	
-	// pour que l'utilisateur puisse choisir le type de l'algorithme et en distance / temps pour Pcc
+	// les variables pour choisir le type de l'algorithme et distance/temps pour calculer Pcc
 	public int choixAlgo;
 	public int isEnTemps;
 	

@@ -1,7 +1,7 @@
 package core;
 
 /**
- * La classe Label qui gère à la fois l'algorithme de Dijkstra.
+ * La classe Label qui gère à la fois l'algorithme de Dijkstra, A* et les problèmes de covoiturage.
  * On considère ici que label en algorithme de Dijkstra, 
  * est identique à label en A*, mais avec un coût d'estimation toujours valant 0.
  */
@@ -11,28 +11,25 @@ public class Label implements Comparable<Label> {
 	// un booléen valant vrai si le sommet est définitivement fixé par l'algorithme
 	private boolean marquage;
 	// un booléen valant vrai si le sommet est parcouru par le piéton
-	private boolean parcouru_pieton;
+	private boolean parcouru_pieton = false;
 	// un booléen valant vrai si le sommet est parcouru par l'automobiliste
-	private boolean parcouru_automobiliste;
+	private boolean parcouru_automobiliste = false;
 	// un booléen valant vrai si le sommet est parcouru par destination
-	private boolean parcouru_destination;
+	private boolean parcouru_destination = false;
 	// le numéro du sommet qui est associé à ce label
 	private int id_sommetCourant;
 	// le numéro du sommet précédent dans la recherche de plus court chemin
 	private int id_sommetPere;
 	// le coût en distance ou en temps, entre le sommet courant et le sommet origine 
 	private double coutCourant;
-	// le coût de destination
-	private double coutDestination = 0;
 	// le coût estimation en distance ou en temps, entre le sommet courant et le sommet destinataire
-	private double coutEstimation = 0;
-	// la somme de coutCourant et coutEstimation
-	private double coutCourantAvecEstimation = 0;
+	private double coutEstimation;
+	// le coût entre destination et le noeud courant, utilisé pour les problèmes de covoiturage 
+	private double coutDestination;
 	
 	/**
 	 * constructeurs 
 	 */
-	
 	// par défault un label : pas de père, coût infini, non marqué
 	public Label(int id_sommetCourant){
 		this.id_sommetCourant = id_sommetCourant;
@@ -55,19 +52,18 @@ public class Label implements Comparable<Label> {
 	 * inférieur, égale, ou supérieur à l'objet spécifique passé en entrée.
 	 * 
 	 * Pour algorithme de A Star, en cas d'égalité, on considèrera l'objet ayant le plus petit coût d'estimation 
-	 * Pour algorithme de Dijkstra, cette dernière partie ne sert qu'à retourner 0 (absence de coût d'estimation)
+	 * Pour algorithme de Dijkstra, le coût d'estimation est toujours 0
+	 * Le coût de destination est utilisé pour problèmes de covoiturage, valant 0 en cas de Dijkstra Standard et A*
 	 */
 	public int compareTo(Label l) {
-		
-		int compareResult = 0;
-		this.coutCourantAvecEstimation = this.coutCourant + this.coutEstimation + this.coutDestination;
-		
-		if(this.getCoutCourantAvecEstimation() < l.getCoutCourantAvecEstimation())
+		int compareResult = 0 ;
+		if (this.coutCourant + this.coutEstimation + this.coutDestination < 
+				l.getCoutCourant() + l.getCoutEstimation() + l.getCoutDestination())
 			compareResult = -1;
-		if(this.getCoutCourantAvecEstimation() > l.getCoutCourantAvecEstimation())
+		else if (this.coutCourant + this.coutEstimation + + this.coutDestination >
+				l.getCoutCourant() + l.getCoutEstimation() + l.getCoutDestination())
 			compareResult = 1;
-		// si le coût courant avec estimation est le même, on compare avec le coût estimation
-		if(this.getCoutCourantAvecEstimation() == l.getCoutCourantAvecEstimation()){
+		else {
 			if(this.getCoutEstimation() < l.getCoutEstimation())
 				compareResult =-1;
 			if(this.getCoutEstimation() > l.getCoutEstimation())
@@ -75,9 +71,9 @@ public class Label implements Comparable<Label> {
 			if(this.getCoutEstimation() == l.getCoutEstimation())
 				compareResult = 0;
 		}
-		return compareResult;
+		return compareResult ;
 	}
-
+	
 	/**
 	 * getters & setters
 	 */
@@ -135,10 +131,6 @@ public class Label implements Comparable<Label> {
 	
 	public double getCoutEstimation() {
 		return coutEstimation;
-	}
-
-	public double getCoutCourantAvecEstimation() {
-		return coutCourantAvecEstimation;
 	}
 
 	public void setCoutEstimation(double coutEstimation) {

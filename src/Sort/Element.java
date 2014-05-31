@@ -15,10 +15,7 @@ public class Element implements Comparable<Element> {
 		this.choixAlgo = choixAlgo ;
 	}
 
-	// Overriding compareTo
-	@Override
 	public int compareTo(Element e) {
-		// TODO Auto-generated method stub
 		if (Constants.printDebug){
 			System.out.println("Run Pcc bewteen node "+ this + " and node "+ e); 
 		}
@@ -31,7 +28,6 @@ public class Element implements Comparable<Element> {
 		return this.value - e.value;
 	}
 	
-	@Override
 	public String toString() {
 		return String.valueOf(value);
 	}

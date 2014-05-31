@@ -7,12 +7,14 @@ import java.util.ArrayList;
  */
 
 public class Noeud {
+	
 	private int id_noeud;
 	private float longitude;
 	private float latitude;
 	private int nb_successeur;
+	// liste de successeur de ce noeud
 	private ArrayList<Successeur> listeSuccesseur = new ArrayList<Successeur>();
-	// utilisé pour les problèmes sous contraintes
+	// liste de prédecesseur de ce noeud, utilisé pour les problèmes sous contraintes
 	private ArrayList<Successeur> listePredecesseur = new ArrayList<Successeur>();
 	
 	/**

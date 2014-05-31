@@ -40,6 +40,11 @@ public class Successeur {
 		return t;
 	}
 	
+	public double calculTempsAretePieton(){
+		double t = this.longueurArete * 3600/ (4*1000) ;
+		return t;
+	}
+	
 	/**
 	 * getters & setters
 	 */
@@ -66,6 +71,10 @@ public class Successeur {
 	
 	public double getTempsArete() {
 		return this.calculTempsArete();
+	}
+	
+	public double getTempsAretePieton() {
+		return this.calculTempsAretePieton();
 	}
 	
 	public void setlongueurArete(int longueurArete) {

@@ -25,7 +25,7 @@ public class BinaryHeap<E extends Comparable<E>> {
     private ArrayList<E> array; // The heap array
     
     // HashMap is used to find the index of element E
-    private HashMap<E, Integer> hashMap = new HashMap<E, Integer>(); 
+    private HashMap<E, Integer> hashMap = new HashMap<E,Integer>();
 
     /**
      * Construct the binary heap.
@@ -95,14 +95,12 @@ public class BinaryHeap<E extends Comparable<E>> {
     private void percolateUp(int index) {
     	// Get element x by its index
 		E x = this.array.get(index) ;
-	
 		// In the case where x (which is on "index" place) is smaller than its parent node, we swap it with its parent (percolateUp)
 	        for( ; index > 0 && x.compareTo(this.array.get(index_parent(index)) ) < 0; index = index_parent(index) ) {
 		    E moving_val = this.array.get(index_parent(index)) ;
 	            this.arraySet(index, moving_val) ;
 	            this.hashMap.put(moving_val, index);
 	}
-
         this.arraySet(index, x) ;
         this.hashMap.put(x, index);
     }
@@ -177,10 +175,9 @@ public class BinaryHeap<E extends Comparable<E>> {
         E minItem = findMin( );
 		E lastItem = this.array.get(--this.currentSize) ;
         this.arraySet(0, lastItem) ;
-        this.percolateDown( 0 );
+        this.percolateDown(0);
         return minItem;
     }
-    
     
     // This function will be used to update current cost of a node
     public void update(E element){

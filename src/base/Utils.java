@@ -16,6 +16,36 @@ public class Utils {
 	}
     }
     
+    /**
+	 * fonction qui met en forme le temps en unité "minute", puis renvoie le String
+	 * paramètre en entrée est en "second"
+     */
+	public static String tempsEnMinToString(double temps) {
+
+		int h;
+		int m;
+		int s;
+		
+		String stringTemps = null;
+
+		if(temps > 3600){
+			h = (int)(temps/3600);
+			m = (int)((temps-3600 * h)/60);
+			s = (int) (temps - 3600 * h - 60 * m) ;
+			stringTemps = h + "h " + m + "min " + s + "s ";
+		}
+		else if(temps >= 60) {
+			m = (int)(temps/60);
+			s = (int) (temps - 60 * m) ;
+			stringTemps = m + "min " + s + "s ";
+		}
+		else if(temps < 60)
+		{
+			stringTemps = temps + "s ";
+		}
+		return stringTemps;
+	}
+    
     public static int read24bits(DataInputStream dis) throws IOException {
 	int x = dis.readUnsignedShort() ;
 	return (x << 8) | dis.readUnsignedByte() ;

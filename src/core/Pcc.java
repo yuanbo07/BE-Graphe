@@ -1,10 +1,9 @@
 package core ;
 
+import base.* ;
 import java.awt.Color;
 import java.util.HashMap;
-import base.Readarg ;
 import java.io.PrintStream;
-import java.util.Random;
 
 /**
  * La classe Pcc est pour calculer le plus court chemin à la fois en algorithme Dijkstra Standard et en Dijkstra A Star.
@@ -54,6 +53,11 @@ public class Pcc extends Algo {
 	// boolean qui indique si l'on est en mode "test"
 	private boolean enModeTest = false ;
 	
+	// boolean qui indique si l'on est en algorithme pour covoiturage
+	private int isCovoiturage = 0 ;
+	
+	private int isDisplay = 0 ;
+	
 	/**
 	 * constructeurs
 	 */
@@ -70,8 +74,9 @@ public class Pcc extends Algo {
 		this.choixAlgo = readarg.lireInt ("Algorithme Dijkstra Standard(0) ou Dijkstra A Star(1) ?");
 		// demander l'utilisateur de choisir entre temps et distance
 		this.isEnTemps = readarg.lireInt ("Le plus court chemin en : distance(0) ou temps(1) ?");
+		// demander l'utilisateur si l'affichage de parcour
+		this.isDisplay = readarg.lireInt ("Voulez-vous afficher le parcours de recherche Pcc : (0) Non (1) Oui ?");
     }
-	
 	
 	// constructeur spécifique pour lancer le test
     public Pcc(Graphe gr, int origine, int destination, int choixAlgo, int isEnTemps) {
@@ -82,6 +87,20 @@ public class Pcc extends Algo {
 		this.isEnTemps = isEnTemps;
 		// on passe en mode test
 		this.enModeTest = true ;
+    }
+    
+	// constructeur spécifique pour les problèmes sous contraintes
+    public Pcc(Graphe gr, int origine, int destination){
+		super(gr);
+		this.origine = origine;
+		this.destination = destination;
+		this.enModeTest = true ;
+		this.isEnTemps = 1 ;
+		this.isCovoiturage = 1 ;
+    }
+    
+    public Pcc(){
+		super(graphe);
     }
 
 	/**
@@ -136,21 +155,18 @@ public class Pcc extends Algo {
 		        		// si ce noeud successeur n'est pas encore marqué par algo
 		        		if(!labelNoeudSuccCourant.isMarque()){
 		        			double coutSuccCourantNouveau = 0 ;
-		        			// si l'utilisateur a choisi le calcul en distance
+		        			// le choix de l'utilisateur entre distance et temps
 		        			if(isEnTemps == 0) 
 		        				coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getLongueurArete();
-		        			// si l'utilisateur a choisi le calcul en temps
 		        			else
 		        				coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getTempsArete();
 		        			
-			    			// si le coût courant nouveau obtenu est inférieur à son coût courant avant
+			    			// si le coût nouveau est inférieur à son coût avant, on remplace le coût et change son père
 			    			if (coutSuccCourantNouveau < labelNoeudSuccCourant.getCoutCourant()) {
-			    				// on remplace l'ancien coût avec ce nouveau coût, et change son père
 			    				labelNoeudSuccCourant.setCoutCourant(coutSuccCourantNouveau);
 			    				labelNoeudSuccCourant.setId_sommetPere(noeudCourant.getId_noeud());
-				    			// si l'utilisateur a choisi de lancer en algorithme A Star
+				    			// si l'utilisateur lance A*
 				    			if (choixAlgo == 1){
-				    				// on récupère le noeud de destination
 				    				Noeud noeudDestination = graphe.getListeNoeuds().get(destination);
 				    				// on calcule estimation en distance ou en temps, selon le choix de l'utilisateur, et le stocke dans label
 				    				if(isEnTemps == 0){
@@ -168,7 +184,8 @@ public class Pcc extends Algo {
 		        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
 		        				tasLabel.insert(labelNoeudSuccCourant);
 		        				nbParcouru++;
-		        				//dessinerSegment(noeudCourant,noeudSuccCourant);
+		        				if(isDisplay == 1)
+		        					dessinerSegment(noeudCourant,noeudSuccCourant);
 		        			}
 			    			// au final, on met à jour le tas
 					    	tasLabel.update(labelNoeudSuccCourant);
@@ -198,12 +215,7 @@ public class Pcc extends Algo {
      * fonction qui dessine un segment entre deux noeuds
      */
     public void dessinerSegment(Noeud n1, Noeud n2){
-    	Random rand = new Random();
-    	float r = rand.nextFloat();
-    	float g = rand.nextFloat();
-    	float b = rand.nextFloat();
-    	Color randomColor = new Color(r, g, b);
-		graphe.getDessin().setColor(randomColor);
+		graphe.getDessin().setColor(Color.blue);
 		graphe.getDessin().setWidth(2);
 		graphe.getDessin().drawLine(n1.getLongitude(), n1.getLatitude(), n2.getLongitude(), n2.getLatitude());
     }
@@ -219,7 +231,7 @@ public class Pcc extends Algo {
     	Label labelCourant = mapCorrespondanceNoeudLabel.get(destination);
     	// on cherche parmi tous les noeuds qui ont été marqués
     	int i = 0;
-    	for(;i < nbMarque;i++){
+    	for(;i < nbMarque ;i++){
     		// si le noeud courant n'est pas le noeud départ
     		while(labelCourant.getId_sommetPere() != -1){
     			// on cherche son père, puis ajoute le père dans le chemin
@@ -259,11 +271,13 @@ public class Pcc extends Algo {
 		return trouveDest;
 	}
 	
-	
-	
+    /**
+     * fonction qui dessine le plus court chemin
+     */
 	public void afficherPlusCourtChemin(){
 		plusCourtChemin.dessinerChemin(graphe.getDessin());
 	}
+	
     /**
      * fonction qui affiche des informations concernant le plus court chemin obtenu, et puis le dessiner
      */
@@ -296,7 +310,6 @@ public class Pcc extends Algo {
     public void afficherPCCModeTest(){
     	
     	construirePlusCourtChemin();
-    	
 		if(isEnTemps == 0){
 			System.out.println(
 					plusCourtChemin.getNoeudDepart().getId_noeud() + " " + 
@@ -336,16 +349,15 @@ public class Pcc extends Algo {
 				System.out.println("Le plus court chemin est 0.");
 			// si la saisie est bonne, on lance l'algorithme
 			else {
-				// algorithme principal
 		    	// on commence à calculer le temps d'execution
 		    	long debut = System.nanoTime();
 				algoPCC();
 				// si l'algorithme a terminé, on arrête le temps d'exécution de l'algo
 				tempsExecution = System.nanoTime() - debut;
 				// s'il existe le Pcc, on affiche des informations et le temps exécution
-				if(existencePCC == true){
+				if (existencePCC == true){
 					afficherPCC();
-					// on affiche selon le choix de l'algorithme
+					// on affiche selon le choix de l'algo
 					if(choixAlgo == 0)
 						System.out.println("Le temps d'exécution de l'algorithme Dijkstra est : ");
 					else
@@ -368,7 +380,7 @@ public class Pcc extends Algo {
     		// si l'algorithme a terminé, on arrête le temps d'exécution de l'algo
     		tempsExecution = System.nanoTime() - debut;
     		// s'il existe le Pcc, on affiche des informations et le temps exécution
-    		if(existencePCC == true){
+    		if(existencePCC == true && isCovoiturage == 0){
     			afficherPCCModeTest();
     		}
         }

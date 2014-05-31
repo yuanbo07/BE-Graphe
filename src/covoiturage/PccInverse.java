@@ -1,16 +1,17 @@
 package covoiturage;
 
-
 import core.*;
 import java.awt.Color;
 import java.util.HashMap;
 
 /**
- * La classe Pcc est pour calculer le plus court chemin à la fois en algorithme Dijkstra Standard et en Dijkstra A Star.
- * Dans le but de minimiser la duplication de code, aucune autre classe n'a été créée.
+ * La classe PccInverse
+ * 
+ * PccInverse est utilisé pour marquer, parmi tous les noeuds en communs parcourus par le piéton et l'automobiliste,
+ * lesquels qui ont été parcourus par la destination. Cela nous donnera tous les noeuds de rencontres possibles.
  */
 
-public class PccDestination extends Algo {
+public class PccInverse extends Pcc {
 	
 	// noeud destination
     protected int destination ;
@@ -23,7 +24,7 @@ public class PccDestination extends Algo {
     
 	// un tas binaire pour y mettre tous les labels, afin d'ordonner le coût courant de label
 	BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
-		
+	
 	// le nombre de sommets parcourus (= ont été placé dans le tas)
 	private int nbParcouru;
 	
@@ -33,24 +34,23 @@ public class PccDestination extends Algo {
 	// le nombre de sommets marqués
 	private int nbMarque;
 	
+    // hashmap pour le problème covoiturage
+	public HashMap<Integer, LabelCovoiturage> mapListeNoeudCommun = new HashMap<Integer, LabelCovoiturage>();
+	
+	// la proportion entre vitesse de l'automobiliste et la vitesse du piéton
+	private int proportionVitesse ;
+	
     // le temps d'exécution de l'algorithme
     private long tempsExecution;
-    	
-	// boolean qui indique si l'on est en mode "test"
-	private boolean enModeTest = false ;
-	
-	BinaryHeap<Label> tasNoeudEnCommun = new BinaryHeap<Label>();
 	
 	/**
 	 * constructeurs
 	 */
-	// constructeur spécifique pour lancer le test
-    public PccDestination(Graphe gr, int destination, BinaryHeap<Label> tasNoeudEnCommun) {
-		super(gr);
+	
+    public PccInverse(Graphe gr, int destination, HashMap<Integer, LabelCovoiturage> mapListeNoeudCommun, int proportionVitesse) {
 		this.destination = destination;
-		// on passe en mode test
-		this.enModeTest = true ;
-		this.tasNoeudEnCommun = tasNoeudEnCommun ;
+		this.mapListeNoeudCommun = mapListeNoeudCommun ;
+		this.proportionVitesse = proportionVitesse ;
     }
 
 	/**
@@ -61,11 +61,11 @@ public class PccDestination extends Algo {
     	// on met les labels de tous les noeuds dans la map de correspondance "numéro de noeud, label"
     	for (; i<numNoeudGraphe ; i++){
     		int numNoeudCourant = graphe.getListeNoeuds().get(i).getId_noeud();
-    		// si c'est le noeud origine, on crée son label, l'initialise et le met dans le tas
+    		// si c'est le noeud destinataire, on crée son label, l'initialise et le met dans le tas
     		if(numNoeudCourant == destination)
     		{
     			Label labelDestination = new Label(destination, -1, 0, false) ;
-    			mapCorrespondanceNoeudLabel.put(numNoeudCourant, labelDestination);
+    			mapCorrespondanceNoeudLabel.put(destination, labelDestination);
     			tasLabel.insert(labelDestination);
     			nbMaxTas++;
     			nbParcouru++;
@@ -82,7 +82,6 @@ public class PccDestination extends Algo {
 	/* La complexité pour ces deux algorithmes : o(nlogn) .
      */
     public void algoPCC(){
-    	
     	// on initialise l'algorithme
     	this.initialisationAlgo();
 	    	// si le tas n'est pas vide
@@ -103,9 +102,12 @@ public class PccDestination extends Algo {
 		        		// si ce noeud predecesseur n'est pas encore marqué par algo
 		        		if(!labelNoeudPredCourant.isMarque()){
 		        			double coutPredCourantNouveau = 0 ;
-		        			coutPredCourantNouveau = labelCourant.getCoutCourant() + pred.getTempsArete();
-		        			
-			    			// si le coût courant nouveau obtenu est inférieur à son coût courant avant
+		        			if (proportionVitesse != 6)
+		        				coutPredCourantNouveau = labelCourant.getCoutCourant() + pred.getLongueurArete()*3600/(proportionVitesse*4*1000);
+		        			else
+		        				coutPredCourantNouveau = labelCourant.getCoutCourant() + pred.getTempsArete() ;
+		        				
+	        				// si le coût courant nouveau obtenu est inférieur à son coût courant avant
 			    			if (coutPredCourantNouveau < labelNoeudPredCourant.getCoutCourant()) {
 			    				// on remplace l'ancien coût avec ce nouveau coût, et change son père
 			    				labelNoeudPredCourant.setCoutCourant(coutPredCourantNouveau);
@@ -115,15 +117,11 @@ public class PccDestination extends Algo {
 		        			if(!tasLabel.isInHeap(labelNoeudPredCourant)){
 		        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
 		        				tasLabel.insert(labelNoeudPredCourant);
-		        				labelNoeudPredCourant.setParcouru_destination(true);
 		        				nbParcouru++;
 		        				dessinerSegment(noeudCourant,noeudPredCourant);
+		        				if(mapListeNoeudCommun.containsKey(pred.getNoeudPere().getId_noeud()))
+				        			labelNoeudPredCourant.setParcouru_destination(true);
 		        			}
-		        			if(tasNoeudEnCommun.isInHeap(labelNoeudPredCourant)){
-		        				labelNoeudPredCourant.setCoutDestination(labelNoeudPredCourant.getCoutCourant());
-		        				tasNoeudEnCommun.update(labelNoeudPredCourant);
-		        			}
-			    			// au final, on met à jour le tas
 					    	tasLabel.update(labelNoeudPredCourant);
 			    		}
 		        	}
@@ -131,11 +129,8 @@ public class PccDestination extends Algo {
 		        	updateNbElementMaxTas();
 		        }
 	    	}
-}
+    }
     
-    /**
-     * fonction qui met à jour le nombre maximal des éléments dans le tas
-     */
     public void updateNbElementMaxTas(){
     	if(tasLabel.currentSize > nbMaxTas)
     		nbMaxTas = tasLabel.currentSize;
@@ -149,15 +144,45 @@ public class PccDestination extends Algo {
 		graphe.getDessin().setWidth(2);
 		graphe.getDessin().drawLine(n1.getLongitude(), n1.getLatitude(), n2.getLongitude(), n2.getLatitude());
     }
-    
+
     /**
      * fonction principale qui lance l'algorithme, affiche les résultats et le temps d'exécution
-     */ public void run(){
-     	long debut = System.nanoTime();
-		algoPCC();
-		System.out.println(" Lancer Dijkstra") ;
-		System.out.println(" Le nombre de sommets parcourus " + nbParcouru);
-		System.out.println(" Le nombre de sommets marqués : " + nbMarque );
-		tempsExecution = System.nanoTime() - debut;
-     }
+     */ 
+    public void run(){
+    	long debut = System.nanoTime();
+    		algoPCC();
+    	tempsExecution = System.nanoTime() - debut;
+    }
+
+	public int getNbParcouru() {
+		return nbParcouru;
+	}
+
+	public int getNbMaxTas() {
+		return nbMaxTas;
+	}
+
+	public int getNbMarque() {
+		return nbMarque;
+	}
+
+	public void setNbParcouru(int nbParcouru) {
+		this.nbParcouru = nbParcouru;
+	}
+
+	public void setNbMaxTas(int nbMaxTas) {
+		this.nbMaxTas = nbMaxTas;
+	}
+
+	public void setNbMarque(int nbMarque) {
+		this.nbMarque = nbMarque;
+	}
+
+	public long getTempsExecution() {
+		return tempsExecution;
+	}
+
+	public void setTempsExecution(long tempsExecution) {
+		this.tempsExecution = tempsExecution;
+	}
 }

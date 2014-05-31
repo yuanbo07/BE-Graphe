@@ -1,8 +1,8 @@
 package base ;
 
 import core.* ;
-import Sort.LaunchTest;
-import covoiturage.LancerCovoiturage;
+import Sort.*;
+import covoiturage.*;
 import java.io.* ;
 
 /**
@@ -37,8 +37,7 @@ public class Launch {
 		System.out.println ("4 - Lancer test en mode Sort Pcc (couples de sommets choisis aléatoirement)") ;
 		System.out.println ("5 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
 		System.out.println ("6 - Charger un fichier de chemin (.path) et le verifier.") ;
-		System.out.println ("7 - Problème covoiturage - Synchronisation sans contrainte") ;
-		System.out.println ("8 - Problème covoiturage - Synchronisation avec limite de déplacement du piéton") ;
+		System.out.println ("7 - Problème covoiturage (recherche du point de rencontre & ZPiéton)") ;
 		System.out.println () ;
     }
 
@@ -93,7 +92,7 @@ public class Launch {
 		    graphe.verifierChemin(Openfile.open (nom_chemin), nom_chemin) ;
 		    break ;
 		    
-		case 7 : algo = new LancerCovoiturage(graphe, this.readarg); break;
+		case 7 : algo = new LaunchCovoiturage(graphe, this.readarg); break;
 
 		default:
 		    System.out.println ("Choix de menu incorrect : " + choix) ;

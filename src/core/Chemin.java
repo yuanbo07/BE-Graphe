@@ -164,10 +164,10 @@ public class Chemin {
 		
 		if(distance >= 1000) {
 			km = (double)distance/1000;
-			s = km + " km" ;
+			s = km + "km " ;
 		}
 		else{
-			s = distance + " m";
+			s = distance + "m ";
 		}
 		return s;
 	}
@@ -186,18 +186,18 @@ public class Chemin {
 
 		if(temps > 3600){
 			h = (int)(temps/3600);
-			m = (int)(temps/60);
+			m = (int)((temps-3600 * h)/60);
 			s = (int) (temps - 3600 * h - 60 * m) ;
-			stringTemps = h + " h" + m + " min" + s + " s";
-		};
-		if(temps >= 60) {
+			stringTemps = h + "h " + m + "min " + s + "s ";
+		}
+		else if(temps >= 60) {
 			m = (int)(temps/60);
 			s = (int) (temps - 60 * m) ;
-			stringTemps = m + " min" + s + " s";
-		};
-		if(temps < 60)
+			stringTemps = m + "min " + s + "s ";
+		}
+		else if(temps < 60)
 		{
-			stringTemps = temps + " s";
+			stringTemps = temps + "s ";
 		}
 		return stringTemps;
 	}
