@@ -8,7 +8,10 @@ import java.util.HashMap;
  * La classe PccReg (Regular Pcc)
  * 
  * Cette classe représente l'algorithme général de Dijkstra (un sommet vers tous).
- * On utilise cette classe pour trouver les noeuds en commun parcourus par le piéton et l'automobiliste sur la carte.
+ * On utilise cette classe pour trouver les sommets en commun parcourus à la fois par le piéton et l'automobiliste sur la carte.
+ * 
+ * p.s. : Actuellement, on a implémenté ici une façon simple pour permettre le piéton de ne pas marcher plus de x minutes.
+ * La méthode qu'on a implémenté pour le moment n'est pas exactement la méthode demandée dans le sujet, reste à refaire.
  */
 
 public class PccReg extends Pcc {
@@ -66,7 +69,7 @@ public class PccReg extends Pcc {
     }
 
 	/**
-	 * fonction qui initialise l'algorithme, met le tas, et met les labels des sommets dans le Hashmap
+	 * fonction qui initialise l'algorithme
 	 */
 	public void initialisationAlgo(){
  	    int i = 0;
@@ -76,6 +79,7 @@ public class PccReg extends Pcc {
     		{
     			Label labelOrigine = new Label(origine, -1, 0, false) ;
     			mapCorrespondanceNoeudLabel.put(numNoeudCourant, labelOrigine);
+    			// on marque le sommet origine selon le cas du piéton et l'automobiliste
     			if(isPieton == 1)
     				labelOrigine.setParcouru_pieton(true);
     			if(isPieton == 0)
@@ -112,18 +116,20 @@ public class PccReg extends Pcc {
 	        	if(isPieton ==0 || succValidePieton){
 	        	// si c'est un chemin non routier, on ne le traite pas
 	        	if(succ.getDescripteur().getType() != 'z'){
-	        		// on choisit un noeud successeur courant
 	        		Noeud noeudSuccCourant = succ.getNoeudDestination();
 	        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
 	        		// si ce noeud successeur n'est pas encore marqué par algo
 	        		if(!labelNoeudSuccCourant.isMarque()){
 	        			double coutSuccCourantNouveau = 0 ;
+	        			// si c'est l'automobiliste et la proportion est celle de vitesse maximale
 	        			if(isPieton == 0 && proportionVitesse == 6){
 	        				coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getTempsArete();
 	        			}
+	        			// si c'est l'automobiliste et la proportion n'est pas celle de vitesse maximale
 	        			if(isPieton == 0 && proportionVitesse != 6){
 	        				coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getLongueurArete()*3600/(4*proportionVitesse*1000);
 	        			}
+	        			// si c'est le piéton, une méthode spécifique getTempsAretePieton() renvoie le coût en temps
 	        			if(isPieton == 1){
 	        				coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getTempsAretePieton();
 	        			}
@@ -136,16 +142,18 @@ public class PccReg extends Pcc {
 	        			// si ce noeud successeur n'est pas encore parcouru
 	        			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
 	        				if(isPieton == 1){
+	        					// si on set pas limitation pour le piéton
 	        					if(limitePieton == -1)
 	        						labelNoeudSuccCourant.setParcouru_pieton(true);
 	        					else {
+	    	        				// si le coût courant est inférieur à x minutes, on marque ce sommet successeur, sinon on le marque pas
 	        						if(labelNoeudSuccCourant.getCoutCourant() <= limitePieton*60)
 		        						labelNoeudSuccCourant.setParcouru_pieton(true);
 	        					}
 	        				}
+	        				// si c'est l'automobiliste
 	        				if(isPieton == 0)
 	        					labelNoeudSuccCourant.setParcouru_automobiliste(true);
-	        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
 	        				tasLabel.insert(labelNoeudSuccCourant);
 	        				nbParcouru++;
 	        				dessinerSegment(noeudCourant,noeudSuccCourant);
@@ -173,17 +181,27 @@ public class PccReg extends Pcc {
 		graphe.getDessin().drawLine(n1.getLongitude(), n1.getLatitude(), n2.getLongitude(), n2.getLatitude());
     }
     
+    /**
+     * fonction qui met à jour le nombre maximal des éléments dans le tas
+     */
     public void updateNbElementMaxTas(){
     	if(tasLabel.currentSize > nbMaxTas)
     		nbMaxTas = tasLabel.currentSize;
     }
 
+    /**
+     * fonction principale qui lance l'algorithme
+     */ 
     public void run(){
         	long debut = System.nanoTime();
         		algoPCC();
         	tempsExecution = System.nanoTime() - debut;
     }
 
+	/**
+	 * getters & setters
+	 */
+    
 	public int getNbParcouru() {
 		return nbParcouru;
 	}

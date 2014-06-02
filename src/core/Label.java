@@ -1,9 +1,9 @@
 package core;
 
 /**
- * La classe Label qui gère à la fois l'algorithme de Dijkstra, A* et les problèmes de covoiturage.
- * On considère ici que label en algorithme de Dijkstra, 
- * est identique à label en A*, mais avec un coût d'estimation toujours valant 0.
+ * La classe Label gère à la fois l'algorithme de Dijkstra Standard et A*.
+ * On considère ici que label en algorithme de Dijkstra est identique à label en A*, 
+ * mais avec un coût d'estimation toujours valant 0.
  */
 
 public class Label implements Comparable<Label> {

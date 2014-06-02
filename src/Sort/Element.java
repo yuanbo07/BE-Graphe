@@ -5,6 +5,7 @@ public class Element implements Comparable<Element> {
 	
 	public Graphe graphe ;
 	private int value ;
+	// les deux variables sont passé en paramètres
 	public int isEnTemps ;
 	public int choixAlgo ;
 

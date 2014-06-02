@@ -8,7 +8,9 @@ import java.util.HashMap;
  * La classe PccInverse
  * 
  * PccInverse est utilisé pour marquer, parmi tous les noeuds en communs parcourus par le piéton et l'automobiliste,
- * lesquels qui ont été parcourus par la destination. Cela nous donnera tous les noeuds de rencontres possibles.
+ * lesquels qui ont été parcourus par la destination.
+ * La compléxité de Pcc inverse n'augmente pas grâce à l'utilisation d'un hashmap qui vérifie l'existence de sommet
+ * parmi tous les sommets en commun.
  */
 
 public class PccInverse extends Pcc {
@@ -44,9 +46,8 @@ public class PccInverse extends Pcc {
     private long tempsExecution;
 	
 	/**
-	 * constructeurs
+	 * constructeur
 	 */
-	
     public PccInverse(Graphe gr, int destination, HashMap<Integer, LabelCovoiturage> mapListeNoeudCommun, int proportionVitesse) {
 		this.destination = destination;
 		this.mapListeNoeudCommun = mapListeNoeudCommun ;
@@ -54,7 +55,7 @@ public class PccInverse extends Pcc {
     }
 
 	/**
-	 * fonction qui initialise l'algorithme, met tas, et met les labels des sommets dans le Hashmap
+	 * fonction qui initialise l'algorithme
 	 */
 	public void initialisationAlgo(){
  	    int i = 0;
@@ -78,8 +79,7 @@ public class PccInverse extends Pcc {
 	}
 	
     /**
-     * Algorithme de Dijkstra et A star, avec l'implementation d'un tas binaire.
-	/* La complexité pour ces deux algorithmes : o(nlogn) .
+     * Algorithme de Dijkstra type "un vers tous"
      */
     public void algoPCC(){
     	// on initialise l'algorithme
@@ -102,9 +102,12 @@ public class PccInverse extends Pcc {
 		        		// si ce noeud predecesseur n'est pas encore marqué par algo
 		        		if(!labelNoeudPredCourant.isMarque()){
 		        			double coutPredCourantNouveau = 0 ;
+		        			// si la proportion choisie n'est pas celle de vitesse maximale
 		        			if (proportionVitesse != 6)
+		        				// on calcule la vitesse pour l'automobiliste
 		        				coutPredCourantNouveau = labelCourant.getCoutCourant() + pred.getLongueurArete()*3600/(proportionVitesse*4*1000);
 		        			else
+		        				// sinon, on prend la vitesse maximale selon les routes
 		        				coutPredCourantNouveau = labelCourant.getCoutCourant() + pred.getTempsArete() ;
 		        				
 	        				// si le coût courant nouveau obtenu est inférieur à son coût courant avant
@@ -119,7 +122,9 @@ public class PccInverse extends Pcc {
 		        				tasLabel.insert(labelNoeudPredCourant);
 		        				nbParcouru++;
 		        				dessinerSegment(noeudCourant,noeudPredCourant);
+		        				// si ce noeud predecesseur existe dans le hashmap de noeuds en commun
 		        				if(mapListeNoeudCommun.containsKey(pred.getNoeudPere().getId_noeud()))
+		        					// on le marque, sinon on ne fait rien
 				        			labelNoeudPredCourant.setParcouru_destination(true);
 		        			}
 					    	tasLabel.update(labelNoeudPredCourant);
@@ -131,6 +136,9 @@ public class PccInverse extends Pcc {
 	    	}
     }
     
+    /**
+     * fonction qui met à jour le nombre maximal des éléments dans le tas
+     */
     public void updateNbElementMaxTas(){
     	if(tasLabel.currentSize > nbMaxTas)
     		nbMaxTas = tasLabel.currentSize;
@@ -146,7 +154,7 @@ public class PccInverse extends Pcc {
     }
 
     /**
-     * fonction principale qui lance l'algorithme, affiche les résultats et le temps d'exécution
+     * fonction principale qui lance l'algorithme
      */ 
     public void run(){
     	long debut = System.nanoTime();
@@ -154,6 +162,10 @@ public class PccInverse extends Pcc {
     	tempsExecution = System.nanoTime() - debut;
     }
 
+	/**
+	 * getters & setters
+	 */
+    
 	public int getNbParcouru() {
 		return nbParcouru;
 	}

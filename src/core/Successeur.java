@@ -18,7 +18,6 @@ public class Successeur {
 	/**
 	 * constructeurs
 	 */
-	
 	public Successeur(int nb_segment, Noeud noeudDestination, int longueurArete, Descripteur descripteur, int succ_zone){
 		super();
 		this.nb_segment = nb_segment;

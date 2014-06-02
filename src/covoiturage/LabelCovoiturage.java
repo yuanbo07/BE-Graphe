@@ -23,10 +23,10 @@ public class LabelCovoiturage implements Comparable<LabelCovoiturage> {
 		this.coutAutomobiliste = coutAutomobiliste;
 	}
 	
-	// on prend le max entre le coût du piéton et le coût de l'automobiliste (possibilité d'attente)
 	public int compareTo(LabelCovoiturage l) {
 		int compareResult = 0 ;
-		if (Math.max(this.coutPieton, this.coutAutomobiliste) +  + this.coutDestination < 
+		// on prend le max entre le coût du piéton et le coût de l'automobiliste
+		if (Math.max(this.coutPieton, this.coutAutomobiliste) + this.coutDestination < 
 				Math.max(l.getCoutPieton(),l.getCoutAutomobiliste()) + l.getCoutDestination())
 			compareResult = -1;
 		else if (Math.max(this.coutPieton,this.coutAutomobiliste) + this.coutDestination > 

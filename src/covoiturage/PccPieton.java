@@ -8,7 +8,7 @@ import core.*;
  * La classe PccPieton
  * 
  * Cette classe ne sert qu'à dessiner le Pcc entre le point départ du piéton et le meilleur point de rencontre.
- * La raison qu'on n'utilise pas le Pcc ici, c'est parce qu'on a les contraintes particulières pour le piéton (routes inempruntables),
+ * La raison que l'on n'utilise pas le Pcc ici, c'est parce qu'on a les contraintes particulières pour le piéton (routes inempruntables),
  * il est toutefois possible d'intégrer cette classe dans la classe Pcc.
  */
 
@@ -65,8 +65,7 @@ public class PccPieton extends Pcc {
 	}
 	
     /**
-     * Algorithme de Dijkstra et A star, avec l'implementation d'un tas binaire.
-	/* La complexité pour ces deux algorithmes : o(nlogn) .
+     * Algorithme de Dijkstra du type "un vers un"
      */
     public void algoPCC(){
     	
@@ -88,35 +87,32 @@ public class PccPieton extends Pcc {
 		        	boolean succValidePieton = succ.getDescripteur().vitesseMax() != 110 && succ.getDescripteur().vitesseMax() != 130 ;
 		        	// si c'est l'automobiliste ou le piéton qui respecte les vitesses max, on prend ce successeur
 		        	if(succValidePieton){
-
-		        	// si c'est un chemin non routier, on ne le traite pas
-		        	if(succ.getDescripteur().getType() != 'z'){
-		        		// on choisit un noeud successeur courant
-		        		Noeud noeudSuccCourant = succ.getNoeudDestination();
-		        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
-		        		// si ce noeud successeur n'est pas encore marqué par algo
-		        		if(!labelNoeudSuccCourant.isMarque()){
-		        			double coutSuccCourantNouveau = 0 ;
-		        			coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getTempsAretePieton();
-		        			
-			    			// si le coût courant nouveau obtenu est inférieur à son coût courant avant
-			    			if (coutSuccCourantNouveau < labelNoeudSuccCourant.getCoutCourant()) {
-			    				// on remplace l'ancien coût avec ce nouveau coût, et change son père
-			    				labelNoeudSuccCourant.setCoutCourant(coutSuccCourantNouveau);
-			    				labelNoeudSuccCourant.setId_sommetPere(noeudCourant.getId_noeud());
-			    			}
-		        			// si ce noeud successeur n'est pas encore parcouru
-		        			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
-		        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
-		        				tasLabel.insert(labelNoeudSuccCourant);
-		        			}
-			    			// au final, on met à jour le tas
-					    	tasLabel.update(labelNoeudSuccCourant);
-			    		}
+			        	// si c'est un chemin non routier, on ne le traite pas
+			        	if(succ.getDescripteur().getType() != 'z'){
+			        		Noeud noeudSuccCourant = succ.getNoeudDestination();
+			        		Label labelNoeudSuccCourant = mapCorrespondanceNoeudLabel.get(noeudSuccCourant.getId_noeud());
+			        		// si ce noeud successeur n'est pas encore marqué par algo
+			        		if(!labelNoeudSuccCourant.isMarque()){
+			        			double coutSuccCourantNouveau = 0 ;
+			        			coutSuccCourantNouveau = labelCourant.getCoutCourant() + succ.getTempsAretePieton();
+			        			
+				    			// si le coût courant nouveau obtenu est inférieur à son coût courant avant
+				    			if (coutSuccCourantNouveau < labelNoeudSuccCourant.getCoutCourant()) {
+				    				// on remplace l'ancien coût avec ce nouveau coût, et change son père
+				    				labelNoeudSuccCourant.setCoutCourant(coutSuccCourantNouveau);
+				    				labelNoeudSuccCourant.setId_sommetPere(noeudCourant.getId_noeud());
+				    			}
+			        			// si ce noeud successeur n'est pas encore parcouru
+			        			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
+			        				tasLabel.insert(labelNoeudSuccCourant);
+			        			}
+				    			// au final, on met à jour le tas
+						    	tasLabel.update(labelNoeudSuccCourant);
+				    		}
+			        	}
+			        	// on met à jour nombre max dans le tas
+			        	updateNbElementMaxTas();
 		        	}
-		        	// on met à jour nombre max dans le tas
-		        	updateNbElementMaxTas();
-		        }
 		        }
 	    	}
 	    	else
@@ -155,9 +151,7 @@ public class PccPieton extends Pcc {
     			labelCourant = mapCorrespondanceNoeudLabel.get(labelCourant.getId_sommetPere());
     		}
     	}
-    	// on met le chemin dans le bon ordre
 		plusCourtChemin.renverserChemin();
-    	// compléter les information de PCC
     	plusCourtChemin.setNoeudDepart(noeudDepart);
     	plusCourtChemin.setNoeudDestination(noeudDestination);
     	plusCourtChemin.setNbNoeud(plusCourtChemin.getListeNoeudChemin().size());
@@ -171,7 +165,7 @@ public class PccPieton extends Pcc {
 	}
     
     /**
-     * fonction principale qui lance l'algorithme, affiche les résultats et le temps d'exécution
+     * fonction principale qui lance l'algorithme
      */
     public void run(){
 				algoPCC();

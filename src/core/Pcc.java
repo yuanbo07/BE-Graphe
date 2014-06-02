@@ -181,7 +181,6 @@ public class Pcc extends Algo {
 			    			}
 		        			// si ce noeud successeur n'est pas encore parcouru
 		        			if(!tasLabel.isInHeap(labelNoeudSuccCourant)){
-		        				// on le met dans le tas, et incrémente le nombre de sommets parcourus
 		        				tasLabel.insert(labelNoeudSuccCourant);
 		        				nbParcouru++;
 		        				if(isDisplay == 1)
@@ -196,7 +195,7 @@ public class Pcc extends Algo {
 		        }
 	    	}
 	    	else
-	    	// s'il n'existe pas de pcc entre ces deux noeuds, on sort de fonction
+	    	// s'il n'existe pas de pcc entre ces deux noeuds
 		    return;
 		} while(!mapCorrespondanceNoeudLabel.get(destination).isMarque());
 		// si la destination est marquée, le plus court chemin existe

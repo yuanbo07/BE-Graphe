@@ -4,8 +4,8 @@ import java.io.IOException;
 import base.Readarg;
 
 /**
- * La classe simpleTest est pour le but de calculer tous les chemins possibles entre sommets dans un graphe
- * Eviter d'utiliser ce test pour la carte de grande taille, dans ce cas, utiliser "Sort test"
+ * La classe simpleTest est pour le but de lancer l'algorithme pour tous les chemins possibles entre sommets dans un graphe
+ * Ce test est utilisé pour tester les cartes de petites tailles
  */
 
 public class SimpleTest extends Algo {
@@ -13,6 +13,9 @@ public class SimpleTest extends Algo {
 	public int choixAlgo;
 	public int isEnTemps;
 	
+	/**
+	 * constructeurs
+	 */
 	public SimpleTest(Graphe gr, Readarg readarg){
 		super(gr) ;
 		this.choixAlgo = readarg.lireInt ("Lancer le test en Dijkstra Standard(0) ou Dijkstra A Star(1) ?");
