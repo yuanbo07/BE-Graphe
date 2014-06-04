@@ -2,7 +2,7 @@ package core;
 
 /**
  * La classe Label gère à la fois l'algorithme de Dijkstra Standard et A*.
- * On considère ici que label en algorithme de Dijkstra est identique à label en A*, 
+ * On considère ici que label en algorithme Dijkstra Standard est identique à label en A*, 
  * mais avec un coût d'estimation toujours valant 0.
  */
 
@@ -113,6 +113,8 @@ public class Label implements Comparable<Label> {
 		this.parcouru_automobiliste = parcouru_automobiliste;
 	}
 
+	// getters & setters
+	
 	public int getId_sommetCourant() {
 		return id_sommetCourant;
 	}

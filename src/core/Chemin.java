@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 import base.Dessin;
+import base.Utils;
 
 /**
  *   Classe représentant un chemin
@@ -40,9 +40,7 @@ public class Chemin {
 		this.zoneDestination = zoneDestination;
 	}
 	
-	// constructeur par défault pour construire le plus court chemin
-	public Chemin(){
-	}
+	public Chemin(){}
 	
     /**
      * renvoyer une liste de successeurs qui ont plus d'un chemin entre deux noeuds 
@@ -154,55 +152,6 @@ public class Chemin {
 	}
 
     /**
-	 * fonction qui met en forme la distance en unité "kilomètre", puis renvoie le String
-	 * paramètre en entrée est en "mètre"
-     */
-	public String distanceEnkmToString(double distance) {
-
-		String s = null;
-		double km = 0;
-		
-		if(distance >= 1000) {
-			km = (double)distance/1000;
-			s = km + "km " ;
-		}
-		else{
-			s = distance + "m ";
-		}
-		return s;
-	}
-	
-    /**
-	 * fonction qui met en forme le temps en unité "minute", puis renvoie le String
-	 * paramètre en entrée est en "second"
-     */
-	public String tempsEnMinToString(double temps) {
-
-		int h;
-		int m;
-		int s;
-		
-		String stringTemps = null;
-
-		if(temps > 3600){
-			h = (int)(temps/3600);
-			m = (int)((temps-3600 * h)/60);
-			s = (int) (temps - 3600 * h - 60 * m) ;
-			stringTemps = h + "h " + m + "min " + s + "s ";
-		}
-		else if(temps >= 60) {
-			m = (int)(temps/60);
-			s = (int) (temps - 60 * m) ;
-			stringTemps = m + "min " + s + "s ";
-		}
-		else if(temps < 60)
-		{
-			stringTemps = temps + "s ";
-		}
-		return stringTemps;
-	}
-	
-    /**
 	 * ajouter un noeud dans le chemin
      */
 	public void addNoeud(Noeud n){
@@ -222,6 +171,7 @@ public class Chemin {
 	 * drawLine(long1, lat1, long2, lat2)
      */
 	public void dessinerChemin(Dessin d){
+		// on choisi les couleurs aléatoires afin de différencier chaque chemin
     	Random rand = new Random();
     	float r = rand.nextFloat();
     	float g = rand.nextFloat();
@@ -284,22 +234,22 @@ public class Chemin {
 
 	public String getCoutEnTempsChemin() {
 		calculCheminPlusCourtTemps();
-		return tempsEnMinToString(coutEnTempsChemin);
+		return Utils.tempsEnMinToString(coutEnTempsChemin);
 	}
 
 	public String getDistanceCoutEnTempsChemin() {
 		calculCheminPlusCourtTemps();
-		return distanceEnkmToString(distanceCoutEnTempsChemin);
+		return Utils.distanceEnkmToString(distanceCoutEnTempsChemin);
 	}
 
 	public String getCoutEnDistanceChemin() {
 		calculCheminPlusCourtDistance();
-		return distanceEnkmToString(coutEnDistanceChemin);
+		return Utils.distanceEnkmToString(coutEnDistanceChemin);
 	}
 
 	public String getTempsCoutEnDistanceChemin() {
 		calculCheminPlusCourtDistance();
-		return tempsEnMinToString(tempsCoutEnDistanceChemin);
+		return Utils.tempsEnMinToString(tempsCoutEnDistanceChemin);
 	}
 	
     /**

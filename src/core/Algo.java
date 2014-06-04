@@ -4,7 +4,7 @@ import java.io.* ;
 import base.* ;
 
 /**
- * Classe abstraite représentant un algorithme (connexite, plus court chemin, etc.)
+ * Classe abstraite représentant un algorithme (Dijkstra, A*, Covoiturage, Zpiéton, tests, etc.)
  */
 
 public abstract class Algo {
@@ -15,10 +15,10 @@ public abstract class Algo {
 		Algo.graphe = gr ;
 		this.sortie = fichierSortie ;	
     }
-        
+
     protected Algo(Graphe gr) {
 		Algo.graphe = gr ;
     }
-    
+
     public abstract void run() throws IOException ;
 }

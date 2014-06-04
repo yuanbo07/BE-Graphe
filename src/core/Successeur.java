@@ -27,8 +27,7 @@ public class Successeur {
 		this.succ_zone = succ_zone;
 	}
 	
-	public Successeur(){
-	}
+	public Successeur(){}
 	
 	/**
 	 * fonction qui calcule le temps utilisé pour une arête, en fonction de sa distance et sa vitesse maximale

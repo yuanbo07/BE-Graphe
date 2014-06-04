@@ -12,5 +12,4 @@ public class Connexite extends Algo {
     public void run() {
 	// A vous d'implementer la recherche de connexite.
     }
-
 }

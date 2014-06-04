@@ -16,10 +16,29 @@ public class Utils {
 	}
     }
     
-    /**
-	 * fonction qui met en forme le temps en unité "minute", puis renvoie le String
-	 * paramètre en entrée est en "second"
-     */
+/**
+ *   Fonction qui met en forme la distance en unité "kilomètre", puis renvoie le String.
+ *   Le paramètre en entrée est en unité "mètre".
+ */
+public static String distanceEnkmToString(double distance) {
+
+		String s = null;
+		double km = 0;
+		
+		if(distance >= 1000) {
+			km = (double)distance/1000;
+			s = km + "km " ;
+		}
+		else{
+			s = distance + "m ";
+		}
+		return s;
+	}
+	
+/**
+ *   Fonction qui met en forme le temps en unité "minute", puis renvoie le String.
+ *   Le paramètre en entrée est en unité "seconde".
+ */
 	public static String tempsEnMinToString(double temps) {
 
 		int h;
@@ -106,5 +125,4 @@ public class Utils {
 	    System.exit(1) ;
 	}
     }
-
 }

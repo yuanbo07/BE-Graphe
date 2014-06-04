@@ -20,7 +20,6 @@ public class Noeud {
 	/**
 	 * constructeurs
 	 */
-	
 	public Noeud(int id_noeud, float latitude, float longitude, int nb_successeur){
 		this.id_noeud = id_noeud;
 		this.latitude = latitude;
@@ -28,8 +27,7 @@ public class Noeud {
 		this.nb_successeur = nb_successeur;
 	}
 	
-	public Noeud(){
-	}
+	public Noeud(){}
 	
 	// fonction pour ajouter un successeur d'un noeud
 	public void addSuccesseur(Successeur succ){

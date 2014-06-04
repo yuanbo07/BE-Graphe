@@ -18,7 +18,7 @@ import java.util.* ;
 
 public class BinaryHeap<E extends Comparable<E>> {
 
-    public int currentSize; // Number of elements in heap
+    private int currentSize; // Number of elements in heap
 
     // Java genericity does not work with arrays.
     // We have to use an ArrayList
@@ -278,4 +278,14 @@ public class BinaryHeap<E extends Comparable<E>> {
 		    }
 		}
     }
+
+    // getters & setters
+    
+	public int getCurrentSize() {
+		return currentSize;
+	}
+
+	public void setCurrentSize(int currentSize) {
+		this.currentSize = currentSize;
+	}
 }

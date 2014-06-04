@@ -50,12 +50,13 @@ public class Pcc extends Algo {
     // booléen qui indique l'existence d'un plus court chemin, initialisé comme faux
 	private boolean existencePCC = false;
 	
-	// boolean qui indique si l'on est en mode "test"
+	// booléen qui indique si l'on est en mode "test"
 	private boolean enModeTest = false ;
 	
-	// boolean qui indique si l'on est en algorithme pour covoiturage
+	// booléen qui indique si l'on est en algorithme pour covoiturage
 	private int isCovoiturage = 0 ;
 	
+	// booléen qui indique si l'affichage du parcours de recherche
 	private int isDisplay = 0 ;
 	
 	/**
@@ -99,8 +100,9 @@ public class Pcc extends Algo {
 		this.isCovoiturage = 1 ;
     }
     
+    // constructeur par défault
     public Pcc(){
-		super(graphe);
+		super(Algo.graphe);
     }
 
 	/**
@@ -206,8 +208,8 @@ public class Pcc extends Algo {
      * fonction qui met à jour le nombre maximal des éléments dans le tas
      */
     public void updateNbElementMaxTas(){
-    	if(tasLabel.currentSize > nbMaxTas)
-    		nbMaxTas = tasLabel.currentSize;
+    	if(tasLabel.getCurrentSize() > nbMaxTas)
+    		nbMaxTas = tasLabel.getCurrentSize();
     }
     
     /**

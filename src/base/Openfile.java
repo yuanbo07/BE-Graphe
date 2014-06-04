@@ -20,8 +20,8 @@ public class Openfile {
     {  	// NE MODIFIEZ PAS CELUI-CI
 	// car il permet de tester en etant a l'INSA.
 	"/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps",
-
-        // On cherche aussi dans le sous-repertoire local "Maps" (s'il existe)
+    
+	// On cherche aussi dans le sous-repertoire local "Maps" (s'il existe)
 	"Maps", 
 
 	// et dans le repertoire courant (Unix uniquement)

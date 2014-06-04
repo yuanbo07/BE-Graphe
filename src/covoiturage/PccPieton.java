@@ -9,12 +9,11 @@ import core.*;
  * 
  * Cette classe ne sert qu'à dessiner le Pcc entre le point départ du piéton et le meilleur point de rencontre.
  * La raison que l'on n'utilise pas le Pcc ici, c'est parce qu'on a les contraintes particulières pour le piéton (routes inempruntables),
- * il est toutefois possible d'intégrer cette classe dans la classe Pcc.
  */
 
-
 public class PccPieton extends Pcc {
-
+	
+	// sommet origine et sommet destinataire
     protected int origine ;
     protected int destination ;
 
@@ -28,7 +27,7 @@ public class PccPieton extends Pcc {
     private HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
     
 	// un tas binaire pour y mettre tous les labels, afin d'ordonner le coût courant de label
-	BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
+	private BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
 	
 	// le plus court chemin obtenu par l'algorithme
 	private Chemin plusCourtChemin = new Chemin();

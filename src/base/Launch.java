@@ -2,6 +2,7 @@ package base ;
 
 import core.* ;
 import Sort.*;
+import Zpieton.LaunchZpieton;
 import covoiturage.*;
 import java.io.* ;
 
@@ -37,7 +38,8 @@ public class Launch {
 		System.out.println ("4 - Lancer test en mode Sort Pcc (couples de sommets choisis aléatoirement)") ;
 		System.out.println ("5 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
 		System.out.println ("6 - Charger un fichier de chemin (.path) et le verifier.") ;
-		System.out.println ("7 - Problème covoiturage (recherche du point de rencontre & ZPiéton)") ;
+		System.out.println ("7 - Problème covoiturage (recherche du point de rencontre & Zpiéton)") ;
+		System.out.println ("8 - Problème covoiturage (Zpiéton avec A*)") ;
 		System.out.println () ;
     }
 
@@ -93,6 +95,8 @@ public class Launch {
 		    break ;
 		    
 		case 7 : algo = new LaunchCovoiturage(graphe, this.readarg); break;
+		
+		case 8 : algo = new LaunchZpieton(graphe, this.readarg); break;
 
 		default:
 		    System.out.println ("Choix de menu incorrect : " + choix) ;
@@ -113,7 +117,7 @@ public class Launch {
     }
 
     // Ouvre un fichier de sortie pour écrire les réponses
-	    public PrintStream fichierSortie () {
+	public PrintStream fichierSortie () {
 		PrintStream result = System.out ;
 	
 		String nom = this.readarg.lireString ("Nom du fichier de sortie ? ") ;

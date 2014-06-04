@@ -26,7 +26,7 @@ public class PccReg extends Pcc {
     protected HashMap<Integer, Label> mapCorrespondanceNoeudLabel = new HashMap<Integer, Label>();
     
 	// un tas binaire pour y mettre tous les labels, afin d'ordonner le coût courant de label
-	BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
+	private BinaryHeap<Label> tasLabel= new BinaryHeap<Label>();
 	
 	// le nombre de sommets parcourus (= ont été placé dans le tas)
 	private int nbParcouru;
@@ -152,8 +152,9 @@ public class PccReg extends Pcc {
 	        					}
 	        				}
 	        				// si c'est l'automobiliste
-	        				if(isPieton == 0)
+	        				if(isPieton == 0){
 	        					labelNoeudSuccCourant.setParcouru_automobiliste(true);
+	        				}
 	        				tasLabel.insert(labelNoeudSuccCourant);
 	        				nbParcouru++;
 	        				dessinerSegment(noeudCourant,noeudSuccCourant);
@@ -185,8 +186,8 @@ public class PccReg extends Pcc {
      * fonction qui met à jour le nombre maximal des éléments dans le tas
      */
     public void updateNbElementMaxTas(){
-    	if(tasLabel.currentSize > nbMaxTas)
-    		nbMaxTas = tasLabel.currentSize;
+    	if(tasLabel.getCurrentSize() > nbMaxTas)
+    		nbMaxTas = tasLabel.getCurrentSize();
     }
 
     /**
@@ -216,5 +217,14 @@ public class PccReg extends Pcc {
 
 	public long getTempsExecution() {
 		return tempsExecution;
+	}
+
+	public HashMap<Integer, Label> getMapCorrespondanceNoeudLabel() {
+		return mapCorrespondanceNoeudLabel;
+	}
+
+	public void setMapCorrespondanceNoeudLabel(
+			HashMap<Integer, Label> mapCorrespondanceNoeudLabel) {
+		this.mapCorrespondanceNoeudLabel = mapCorrespondanceNoeudLabel;
 	}
 }

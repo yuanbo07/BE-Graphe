@@ -23,6 +23,7 @@ public class LabelCovoiturage implements Comparable<LabelCovoiturage> {
 		this.coutAutomobiliste = coutAutomobiliste;
 	}
 	
+	// la méthode qui compare deux labelCovoiturage par leur coût total
 	public int compareTo(LabelCovoiturage l) {
 		int compareResult = 0 ;
 		// on prend le max entre le coût du piéton et le coût de l'automobiliste

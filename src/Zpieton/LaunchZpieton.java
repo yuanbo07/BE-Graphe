@@ -1,18 +1,16 @@
-package covoiturage;
+package Zpieton;
 
 import core.*;
+import covoiturage.*;
 import base.*;
 import java.io.IOException;
 import java.util.HashMap;
 
 /**
- * La classe LaunchCovoiturage
- * 
- * On lancer les trois algorithmes Dijkstra, récupère le meilleur point de rencontre,
- * affiche le coût total en temps et les informations, et finalement dessine les trois chemins sur la carte.
+ * La classe Zpieton est pour résoudre le problème du covoiturage avec un guidage A*
  */
 
-public class LaunchCovoiturage extends Algo {
+public class LaunchZpieton extends Algo {
 	
 	// les numéro de sommet du piéton / automobiliste / destination saisis par l'utilisateur
 	private int numPieton ;
@@ -30,12 +28,12 @@ public class LaunchCovoiturage extends Algo {
 	private long tempsExecutionTotal ;
 	// le temps total minimal utilisé pour le covoiturage
 	private double coutTotalCovoiturage ;
-	// la proportion entre la vitesse de l'automobiliste et la vitesse du piéton (proportionVitesse = vitesseAuto/vitessePieton)
-	private int proportionVitesse ;
 	// la faisabilité d'un tel covoiturage (le piéton et l'automobiliste peuvent "au moins" tous les deux atteindre la destination)
 	private boolean faisabiliteCovoiturage = false;
 	// le temps maximal que le piéton peut marcher, en minute
 	private int limitePieton ;
+    // hashmap qui stocke les sommets parcourus par le piéton
+	private HashMap<Integer, LabelCovoiturage> mapListeNoeudMarquePieton = new HashMap<Integer, LabelCovoiturage>();
     // hashmap pour stocker & faciliter l'usage de noeuds en commun
 	private HashMap<Integer, LabelCovoiturage> mapListeNoeudCommun = new HashMap<Integer, LabelCovoiturage>();
 	// le tas pour renvoyer le coût minimal en temps
@@ -44,48 +42,76 @@ public class LaunchCovoiturage extends Algo {
 	/**
 	 * constructeurs
 	 */
-	public LaunchCovoiturage(Graphe gr, Readarg readarg){
+	public LaunchZpieton(Graphe gr, Readarg readarg){
 		super(gr);
 		this.numPieton = readarg.lireInt("Le numéro de noeud d'origine du piéton?");
 		this.numAutomobiliste = readarg.lireInt("Le numéro de noeud d'origine de l'automobiliste?");
 		this.numDestination = readarg.lireInt("Le numéro de noeud de destination?");
-		this.proportionVitesse = readarg.lireInt("Vous voulez que l'automobiliste conduit à quelle vitesse par rapport au piéton ?\n " +
-				"(1) même vitesse (2) 2 fois plus vite (3) 5 fois plus vite (4) 10 fois plus vite (5) 20 fois plus vite (6) vitesse maximale");
 		this.limitePieton = readarg.lireInt("Le piéton peut au maximal marcher combien de minutes ? (-1 si pas de limite)");
-		this.pointRencontre = numDestination ;
-		lancerAlgoCovoiturage();
+		lancerAlgoZpieton();
 	}
 	
-	public void lancerAlgoCovoiturage()
+	public void lancerAlgoZpieton()
 	{
-		// si la saisie par l'utilisateur est correct
+		int i = 0 ;
+		// si la saisie par l'utilisateur est correcte
 		if(verifierSaisie()){
-			
+			// on commence à calculer le temps d'exécution
 	    	long debut = System.nanoTime();
-			// lancer l'algorithme Dijkstra "un vers tous" pour le piéton
-			PccReg algoParcoursPieton = new PccReg(Algo.graphe, numPieton, 1, 1, limitePieton);
+	    	
+			/**
+			 * 	étape 1	:
+			 * 
+			 *	Lancer l'algorithme Dijkstra "un vers tous" par le piéton
+			 *	La zone "Zpiéton" est l'ensemble de sommets dont leur coût en temps < x min 
+			 */
+	    	
+			PccReg algoParcoursPieton = new PccReg(graphe, numPieton, 1, 1, limitePieton);
 			algoParcoursPieton.run();
-			
-			// lancer l'algorithme Dijkstra "un vers tous" pour l'automobiliste
-			PccReg algoParcoursAutomobiliste = new PccReg(Algo.graphe, numAutomobiliste, 0, proportionVitesse);
-			algoParcoursAutomobiliste.run();
-			
-			// on cherche tous les noeuds à la fois parcourus par le piéton et l'automobiliste
-			for(int i =0;i < Algo.graphe.getListeNoeuds().size();i++){
-				if(algoParcoursPieton.mapCorrespondanceNoeudLabel.get(i).isParcouru_pieton() && 
-						algoParcoursAutomobiliste.mapCorrespondanceNoeudLabel.get(i).isParcouru_automobiliste())
-						{
-						// on obtient leur coût
-						double coutAutomobiliste = algoParcoursAutomobiliste.mapCorrespondanceNoeudLabel.get(i).getCoutCourant() ;
-						double coutPieton = algoParcoursPieton.mapCorrespondanceNoeudLabel.get(i).getCoutCourant() ;
-						// on crée un label pour chaque sommet parcouru en commun, et le met dans le hashmap
-						LabelCovoiturage s = new LabelCovoiturage(i, coutPieton, coutAutomobiliste);
-						mapListeNoeudCommun.put(i,s);
+
+			// on cherche tous les noeuds marqués par le piéton, et les insère dans un hashmap
+			for(i=0 ; i < Algo.graphe.getListeNoeuds().size();i++){
+				Label l = algoParcoursPieton.getMapCorrespondanceNoeudLabel().get(i) ;
+				// si le sommet est marqué par piéton
+				if(l.isParcouru_pieton()){
+					// on l'insère dans le hashmap
+					LabelCovoiturage s = new LabelCovoiturage(i, l.getCoutCourant(), 0);
+					mapListeNoeudMarquePieton.put(i, s);
 					}
-				}
+			}
+			
+			/**
+			 * 	étape 2	:
+			 * 
+			 *	Lancer A* par l'automobiliste : origine est l'origine de l'automobiliste, destination est l'origine du piéton.
+			 *	Dès qu'on rencontre un sommet parcouru par piéton(le premier sommet rencontré dans Zpiéton) : on se transforme
+			 *	en Dijkstra "un vers tous", afin de parcourir tous les sommets dans Zpiéton.
+			 *
+			 *	Pour tous les sommets choisis dont le coût en distance > vitessePiéton * tempsMarchePiéton (rayon du circle),
+			 *	on s'arrête.
+			 */
+			
+			// lancer l'algorithme A* par l'automobiliste, puis cherche la zone Zpiéton avec Dijkstra "un vers tous"
+			// une explication détaillée est fournie dans la classe PccZpieton
+			PccZpieton algoParcoursAutomobiliste = new PccZpieton(graphe, numAutomobiliste, numPieton, mapListeNoeudMarquePieton, limitePieton);
+			algoParcoursAutomobiliste.run();			
+			
+			// on cherche tous les noeuds en commun entre le piéton et l'automobiliste, et les ajoutent dans le hashmap
+			for (Integer key : algoParcoursAutomobiliste.getMapListeNoeudEnCommun().keySet()) {
+				double coutAutomobiliste = algoParcoursAutomobiliste.getMapListeNoeudEnCommun().get(key).getCoutCourant() ;
+				double coutPieton = mapListeNoeudMarquePieton.get(key).getCoutPieton() ;
+				LabelCovoiturage s = new LabelCovoiturage(key, coutPieton, coutAutomobiliste);
+				mapListeNoeudCommun.put(key,s);
+			}
+
+			/**
+			 * 	étape 3	:
+			 * 
+			 *	Lancer Dijkstra "un vers tous" à partir du sommet destination, et la suite est identique avec "Covoiturage".
+			 */
 			
 			// on lance la recherche inverse à partir de destination, seuls les sommets dans le hashmap seront marqués
-			PccInverse algoParcoursDest = new PccInverse(Algo.graphe, numDestination, mapListeNoeudCommun, proportionVitesse);
+			PccInverse algoParcoursDest = new PccInverse(Algo.graphe, numDestination, mapListeNoeudCommun, 6);
 			algoParcoursDest.run();
 			
 			// on parcourt le hashmap et insère tous les points de rencontres possibles dans le tas, et les ordonner	
@@ -98,7 +124,7 @@ public class LaunchCovoiturage extends Algo {
 					tas.update(mapListeNoeudCommun.get(key));
 				}
 			}
-			
+
 			// on obtient le meilleur point de rencontre, le pire des cas est le sommet de destination
 			if(!tas.isEmpty()){
 				labelPointRencontre = tas.findMin() ;
@@ -108,7 +134,7 @@ public class LaunchCovoiturage extends Algo {
 			else{
 				System.out.println("Le piéton et l'automobiliste sont impossibles de se rencontrer.");
 			}
-			
+				
 			// la recherche du point de rencontre est terminé, on arrête le temps d'exécution
 			tempsExecutionTotal = System.nanoTime() - debut;
 			
@@ -161,7 +187,7 @@ public class LaunchCovoiturage extends Algo {
 				System.out.println(" - partie traitement : " + (tempsExecutionTotal - algoParcoursDest.getTempsExecution()- algoParcoursAutomobiliste.getTempsExecution() - algoParcoursPieton.getTempsExecution()));
 				System.out.println();
 				System.out.println("Le nombre de tous les points de rencontres possibles est "+mapListeNoeudCommun.size());
-				}
+			}
 		}
 		else {
 			System.out.println();

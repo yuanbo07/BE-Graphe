@@ -22,7 +22,6 @@ public class LaunchTest extends Algo {
 	
 	public LaunchTest(Graphe gr, Readarg readarg) {
 		super(gr) ;
-		graphe = gr ;
 		this.choixAlgo = readarg.lireInt ("Lancer le test en Dijkstra Standard(0) ou Dijkstra A Star(1) ?");
 		this.isEnTemps = readarg.lireInt ("Lancer le test en distance(0) ou temps(1) ?");
 		// on lance le Sort test
@@ -33,7 +32,6 @@ public class LaunchTest extends Algo {
 	 * @param args
 	 */
 	public void SortTest(){
-		// TODO Auto-generated method stub
 		long startTime = System.currentTimeMillis();
 		int size = graphe.getListeNoeuds().size();
 		RandomTable table  = new RandomTable(size, choixAlgo, isEnTemps, graphe);
